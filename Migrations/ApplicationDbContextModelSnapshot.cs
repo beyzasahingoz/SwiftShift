@@ -21,7 +21,7 @@ namespace Bitirme.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Bitirme.Models.Employee", b =>
+            modelBuilder.Entity("Bitirme.Models.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,12 +45,16 @@ namespace Bitirme.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Password")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Phone")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

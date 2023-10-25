@@ -5,13 +5,13 @@ namespace Bitirme.Context
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> contextOptions) 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> contextOptions)
             : base(contextOptions)
         {
 
         }
 
-        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Users> Users { get; set; }
 
     }
 }

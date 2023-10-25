@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Bitirme.Models.Employee>
+﻿@model IEnumerable<Bitirme.Models.Users>
 
 @{
     ViewData["Title"] = "Index";
@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.City)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,6 +51,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.City)
             </td>
+             <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
