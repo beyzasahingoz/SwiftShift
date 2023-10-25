@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Bitirme/1.0.0": {
         "dependencies": {
+          "MessagePackAnalyzer": "2.5.129",
           "Microsoft.EntityFrameworkCore": "7.0.12",
           "Microsoft.EntityFrameworkCore.Design": "7.0.12",
           "Microsoft.EntityFrameworkCore.SqlServer": "7.0.12",
@@ -617,7 +618,7 @@
           }
         }
       },
-      "MessagePackAnalyzer/2.1.152": {},
+      "MessagePackAnalyzer/2.5.129": {},
       "Microsoft.AspNetCore.Razor.Language/6.0.0": {
         "runtime": {
           "lib/netstandard2.0/Microsoft.AspNetCore.Razor.Language.dll": {
@@ -1459,7 +1460,7 @@
       "Microsoft.VisualStudio.Debugger.Contracts/17.2.0": {
         "dependencies": {
           "MessagePack": "2.1.152",
-          "MessagePackAnalyzer": "2.1.152",
+          "MessagePackAnalyzer": "2.5.129",
           "Microsoft.Bcl.AsyncInterfaces": "5.0.0",
           "System.Collections.Immutable": "6.0.0"
         },
@@ -3025,12 +3026,12 @@
       "path": "messagepack.annotations/2.1.152",
       "hashPath": "messagepack.annotations.2.1.152.nupkg.sha512"
     },
-    "MessagePackAnalyzer/2.1.152": {
+    "MessagePackAnalyzer/2.5.129": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-uJhZlGMkXDaFYsH8V9S6o1EyvsUqB9mpU4DVBXNr0DXZVzZMhuLP1IkLj5xK3EKlaAcvkFkZv3eSvuz360wb3Q==",
-      "path": "messagepackanalyzer/2.1.152",
-      "hashPath": "messagepackanalyzer.2.1.152.nupkg.sha512"
+      "sha512": "sha512-AxRB2xsdmZVJaaHeCvFhfkh3I7od1CL94Bz4lzMTyYoHwLB0w3y+5i2G6SApbTuGjIox+/C+k5s7OO02lenbzg==",
+      "path": "messagepackanalyzer/2.5.129",
+      "hashPath": "messagepackanalyzer.2.5.129.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Razor.Language/6.0.0": {
       "type": "package",

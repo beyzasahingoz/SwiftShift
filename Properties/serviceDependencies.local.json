@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets.user"
+    },
+    "mssql1": {
+      "secretStore": "LocalSecretsFile",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/swiftshift/databases/swiftshiftDB",
+      "type": "mssql.azure",
+      "connectionId": "swiftshift.database.windows.net",
+      "dynamicId": null
+    }
+  }
+}
