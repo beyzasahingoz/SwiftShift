@@ -2,7 +2,7 @@
 
 namespace Bitirme.Models
 {
-    public class Users
+    public class SignUp
     {
 
         public int Id { get; set; }
@@ -12,7 +12,5 @@ namespace Bitirme.Models
         public int Phone { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
-
-
     }
 }
