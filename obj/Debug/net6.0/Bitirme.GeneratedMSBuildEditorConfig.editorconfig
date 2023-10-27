@@ -5,69 +5,68 @@ build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
-build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Bitirme
 build_property.RootNamespace = Bitirme
-build_property.ProjectDir = C:\Users\beyza\Source\Repos\SwiftShift\
+build_property.ProjectDir = C:\Users\PC\OneDrive\Masaüstü\BitirmeProjesi_2023\SwiftShift\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\beyza\Source\Repos\SwiftShift
+build_property.MSBuildProjectDirectory = C:\Users\PC\OneDrive\Masaüstü\BitirmeProjesi_2023\SwiftShift
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Home/Index.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Home/Privacy.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Login/Login.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Login/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Shared/Error.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/SignUp/SignUp.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/SignUp/SignUp.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2lnblVwXFNpZ25VcC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Users/Create.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Users/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Users/Delete.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Users/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Users/Details.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Users/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Users/Edit.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Users/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Users/Index.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Users/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/_ViewImports.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/_ViewStart.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/beyza/Source/Repos/SwiftShift/Views/Shared/_Layout.cshtml]
+[C:/Users/PC/OneDrive/Masaüstü/BitirmeProjesi_2023/SwiftShift/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-99ow321hm6
