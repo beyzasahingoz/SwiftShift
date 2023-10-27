@@ -26,7 +26,7 @@ namespace Bitirme.Controllers
             if (ModelState.IsValid)
             {
                 var User = from m in _context.Users select m;
-                User = User.Where(s => s.Name.Contains(model.Username));
+                User = User.Where(s => s.Name.Contains(model.Name));
                 if (User.Count() != 0)
                 {
                     if (User.First().Password == model.Password)
@@ -44,6 +44,11 @@ namespace Bitirme.Controllers
         }
 
         public IActionResult Fail()
+        {
+            return View();
+        }
+
+        public IActionResult Login()
         {
             return View();
         }
