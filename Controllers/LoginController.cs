@@ -31,7 +31,7 @@ namespace Bitirme.Controllers
                 {
                     if (User.First().Password == model.Password)
                     {
-                        return RedirectToAction("Success");
+                        return RedirectToAction("Index", "Home");
                     }
                 }
             }
