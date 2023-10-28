@@ -1924,6 +1924,9 @@ progress {
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);
 }
+.form-group-spacing {
+    margin-bottom: 100px;
+}
 
 .table-responsive {
   overflow-x: auto;

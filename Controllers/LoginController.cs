@@ -35,7 +35,10 @@ namespace Bitirme.Controllers
                     }
                 }
             }
-            return RedirectToAction("Fail");
+
+            ModelState.AddModelError(string.Empty, "Hatalı giriş yaptınız.");
+
+            return View("Login");
         }
 
         public IActionResult Success()
