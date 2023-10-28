@@ -1,14 +1,13 @@
 ﻿using Bitirme.Context;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 
 namespace Bitirme.Controllers
 {
-    public class SignUpController : Controller
+    public class RegisterController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SignUpController(ApplicationDbContext context)
+        public RegisterController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -18,7 +17,7 @@ namespace Bitirme.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,Phone,Address,City,Password")] Models.Users user)
+        public async Task<IActionResult> Register([Bind("Id,Name,Email,Phone,Address,City,Password")] Models.Users user)
         {
             if (ModelState.IsValid)
             {
@@ -29,15 +28,10 @@ namespace Bitirme.Controllers
             return View(user);
         }
 
-        public IActionResult Create()
+        public IActionResult Register()
         {
             return View();
         }
 
-
-        public IActionResult SignUp()
-        {
-            return View();
-        }
     }
 }
