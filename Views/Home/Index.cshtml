@@ -2,12 +2,99 @@
 <html>
 <head>
     <title>SwiftShift</title>
+    
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+            font-family: "Open Sans";
+        }
+
+        div {
+            text-align: center;
+            padding: 50px;
+            background-color: #gray;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 36px;
+            text-align: left;
+        }
+
+        button {
+            background-color: #fff;
+            color: #000; /* Renk kodunu düzelttim (black yerine #000) */
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-left: -750px; /* Butonu sola yanaştırmak için margin-left ekledik */
+        }
+
+            button:hover {
+                background-color: rgb(67, 167, 86);
+                color: black;
+            }
+
+        section {
+            margin: 20px;
+            padding: 20px;
+            background-color: gray;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: gray;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        #intro {
+            background-color: rgb(67, 167, 86);
+        }
+
+        h1, h3, h4, h5, h6 {
+            font-family: "Oswald"
+        }
+    </style>
 </head>
 <body>
-    <div>
-        <h1>
-            GÜVENİLİR TAŞIMACILIK PLATFORMU
-        </h1>
-    </div>
+    <!-- Image header -->
+    <header class="w3-display-container w3-wide" id="home">
+        <img class="w3-image" src="~/images/delivery.jpg" alt="delivery" width="1800" height="530">
+        <div class="w3-display-left w3-padding-large">
+            <h1 class="w3-text-white">Swift Shift</h1>
+            <h1 class="w3-jumbo w3-text-white w3-hide-small"><b>Güvenilir Taşımacılık Platformu</b></h1>
+            <h6><button class="w3-button w3-black w3-padding-large w3-large w3-opacity w3-hover-opacity-off" onclick="window.location.href='/Identity/Account/Register'">Register</button></h6>
+        </div>
+    </header>
+
+    <!-- Grid -->
+    <div class="w3-row w3-padding w3-border">
+
+        <section>
+            <h2>Detay Bilgiler</h2>
+            <p>Burada platformumuz hakkında daha fazla bilgi bulabilirsiniz.</p>
+            <!-- Detay bilgilerinizi daha fazla içerik eklemek için kullanabilirsiniz. -->
+        </section>
+
+        <footer>
+            <h2>İletişim Bilgileri</h2>
+            <p>Adres: Örnek Adres, Şehir</p>
+            <p>Telefon: 123-456-7890</p>
+            <p>E-posta: info@swiftshift.com</p>
+            <!-- İletişim bilgilerinizi buraya ekleyebilirsiniz. -->
+        </footer>
 </body>
 </html>
