@@ -71,6 +71,15 @@ namespace Bitirme.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required]
+            [StringLength(255, ErrorMessage = "Max 255 characters are allowed")]
+            [Display(Name = "Ad")]
+            public string Ad { get; set; }
+
+            [Required]
+            [StringLength(255, ErrorMessage = "Max 255 characters are allowed")]
+            [Display(Name = "Soyad")]
+            public string Soyad { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -114,6 +123,9 @@ namespace Bitirme.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
+                user.Ad = Input.Ad;
+                user.Soyad = Input.Soyad;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
