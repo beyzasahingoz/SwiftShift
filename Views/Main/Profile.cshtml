@@ -1,7 +1,62 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using Microsoft.AspNetCore.Identity
+@using Bitirme.Areas.Identity.Data
 
-<h1>Profil</h1>
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+
+    <style>
+        .cover-photo {
+            background-color: #6B705C;
+            height: 350px;
+            width: 100%;
+            position: relative;
+        }
+
+        .circle {
+            position: absolute;
+            top: 100%; /* Yüksekliğin yarısı kadar yukarıda */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            clip-path: circle(50% at 50% 50%);
+            overflow: hidden; /* Eklenen resmin sınırları içinde kalmasını sağlar */
+        }
+
+        #profilePicture {
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .name {
+            position: absolute;
+            top: 150%; /* Yüksekliğin yarısı kadar yukarıda */
+            left: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cover-photo">
+        <div class="circle">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
+            </div>
+        </div>
+        <div class="name">
+            <h1>@(UserManager.GetUserAsync(User).Result.Ad) @(UserManager.GetUserAsync(User).Result.Soyad)</h1>
+        </div>
+    </div>
+
+</body>
+</html>
