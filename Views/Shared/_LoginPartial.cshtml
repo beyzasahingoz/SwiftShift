@@ -13,11 +13,44 @@
     .rounded-circle {
         height: 50px;
     }
+    li.nav-item {
+   margin:0 0 10px 0;   
+}
 </style>
 
-<ul class="navbar-nav">
+<ul class="navbar-nav" style="text-align:center">
     @if (SignInManager.IsSignedIn(User))
     {
+        <li class="nav-item" style="align-self: center;margin-right: 80px;">
+            <form class="form-inline" method="get" asp-controller="Main" asp-action="Search">
+                <div class="col-auto">
+                    <input type="text" class="form-control" placeholder="Search" name="query">
+                    <div class="col-auto">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </li>
+        <li class="nav-item" style="align-self: center;margin-right: 80px;">
+            <div class="nav">
+                <a asp-controller="Main" asp-action="Explore">Keşfet</a>
+            </div>
+        </li>
+        <li class="nav-item" style="align-self: center;margin-right: 80px;">
+            <div class="nav">
+                <a asp-controller="Main" asp-action="Advert">İlan Ekle</a>
+            </div>
+        </li>
+        <li class="nav-item" style="align-self: center;margin-right: 80px;">
+            <div class="nav">
+                <a asp-controller="Main" asp-action="Order">Siparişlerim</a>
+            </div>
+        </li>
+        <li class="nav-item" style="align-self: center;margin-right: 80px;">
+            <div class="nav">
+                <a asp-controller="Main" asp-action="Message">Mesaj Kutusu</a>
+            </div>
+        </li>
         <li class="nav-item" style="align-self: center;margin-right: 80px;">
             @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
             {
