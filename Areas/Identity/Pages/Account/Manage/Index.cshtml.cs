@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Policy;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Bitirme.Areas.Identity.Data;
@@ -62,6 +63,12 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
 
             [Display(Name = "Profile Picture")]
             public byte[] ProfilePicture { get; set; }
+
+            [Display(Name = "Ad")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Soyad")]
+            public string LastName { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -71,11 +78,15 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
             var profilePicture = user.ProfilePicture;
+            var firstName = user.Ad;
+            var lastName = user.Soyad;
 
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
-                ProfilePicture = profilePicture
+                ProfilePicture = profilePicture,
+                FirstName = firstName,
+                LastName = lastName
             };
         }
 
@@ -114,6 +125,18 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
+            }
+
+            if(Input.FirstName != user.Ad)
+            {
+                user.Ad = Input.FirstName;
+                await _userManager.UpdateAsync(user);
+            }
+
+            if (Input.LastName != user.Soyad)
+            {
+                user.Soyad = Input.LastName;
+                await _userManager.UpdateAsync(user);
             }
 
             if (Request.Form.Files.Count > 0)
