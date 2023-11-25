@@ -130,13 +130,20 @@
                 <div class="circle">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
+                        @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+                        {
+                            <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
+                        }
+                        else
+                        {
+                            <img class="rounded-circle" src="~/images/profilePicture.png">
+                        }
                     </div>
                 </div>
             </div>
             <div class="user-info">
                 <h1>@(UserManager.GetUserAsync(User).Result.Ad) @(UserManager.GetUserAsync(User).Result.Soyad)</h1>
-                <h1 class="point">@(UserManager.GetUserAsync(User).Result.Point) / 10</h1>
+                <h1 class="point">@(UserManager.GetUserAsync(User).Result.Point == null ? 0 : UserManager.GetUserAsync(User).Result.Point)/ 10</h1>
                 <h1 class="description">@(UserManager.GetUserAsync(User).Result.ProfileDescription)</h1>
             </div>
             <table class="info">

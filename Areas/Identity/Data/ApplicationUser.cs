@@ -12,11 +12,11 @@ public class ApplicationUser : IdentityUser
 {
     public string Ad { get; set; }
     public string Soyad { get; set; }
-    public byte[] ProfilePicture { get; set; }
+    public byte[]? ProfilePicture { get; set; }
 
-    public string Point { get; set; }
+    public string? Point { get; set; }
 
-    public string ProfileDescription { get; set; }
+    public string? ProfileDescription { get; set; }
 
 }
 
