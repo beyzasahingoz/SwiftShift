@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Bitirme.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Bitirme.Areas.Identity.Data;
@@ -18,5 +21,16 @@ public class ApplicationUser : IdentityUser
 
     public string? ProfileDescription { get; set; }
 
+    [Required]
+    [ForeignKey("Country")]
+    [DisplayName("Country")]
+    public int CountryId { get; set; }
+    public virtual Country Country { get; set; }
+
+    [Required]
+    [ForeignKey("City")]
+    [DisplayName("City")]
+    public int CityId { get; set; }
+    public virtual City City { get; set; }
 }
 

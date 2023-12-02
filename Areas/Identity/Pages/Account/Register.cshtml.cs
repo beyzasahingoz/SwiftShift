@@ -19,6 +19,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations.Schema;
+using Bitirme.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bitirme.Areas.Identity.Pages.Account
 {
@@ -30,13 +33,18 @@ namespace Bitirme.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly DbContextSwiftShift _context;
+        public List<SelectListItem> Countries { get; }
+        public List<SelectListItem> Cities { get; }
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DbContextSwiftShift context
+        )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +52,9 @@ namespace Bitirme.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
+            Countries = GetCountries();
+            Cities = GetCities();
         }
 
         /// <summary>
@@ -93,6 +104,17 @@ namespace Bitirme.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+
+            [Required]
+            [Display(Name = "")]
+            public int CountryId { get; set; }
+
+            [Required]
+            [Display(Name = "")]
+            public int CityId { get; set; }
+            
+
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -126,6 +148,8 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
                 user.Ad = Input.Ad;
                 user.Soyad = Input.Soyad;
+                user.CountryId = Input.CountryId;
+                user.CityId = Input.CityId;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -189,5 +213,52 @@ namespace Bitirme.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
+
+        private List<SelectListItem> GetCountries()
+        {
+            var lstCountries = new List<SelectListItem>();
+
+            List<Country> Countries = _context.Countries.ToList();
+
+            lstCountries = Countries.Select(ct => new SelectListItem()
+            {
+                Value = ct.Id.ToString(),
+                Text = ct.CountryName
+            }).ToList();
+
+            var defItem = new SelectListItem()
+            {
+                Value = "",
+                Text = "----Select Country----"
+            };
+
+            lstCountries.Insert(0, defItem);
+
+            return lstCountries;
+        }
+
+        private List<SelectListItem> GetCities(int countryId = 1)
+        {
+            List<SelectListItem> lstCities = _context.Cities
+                .Where(c => c.CountryId == countryId)
+                .OrderBy(n => n.CityName)
+                .Select(n =>
+                new SelectListItem
+                {
+                    Value = n.Id.ToString(),
+                    Text = n.CityName
+                }).ToList();
+
+            var defItem = new SelectListItem()
+            {
+                Value = "",
+                Text = "----Select City----"
+            };
+
+            lstCities.Insert(0, defItem);
+
+            return lstCities;
+        }
+        
     }
 }
