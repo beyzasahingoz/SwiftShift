@@ -23,8 +23,8 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly DbContextSwiftShift _context;
 
-        public List<SelectListItem> Countries { get; }
-        public List<SelectListItem> Cities { get; }
+        public List<SelectListItem> Countries { get; set; }
+        public List<SelectListItem> Cities { get; set; }
         public IndexModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -108,6 +108,8 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
                 Country = country,
                 City = city,
             };
+            Countries = GetCountries(user.CountryId);
+            Cities = GetCities(user.CountryId, user.CityId);
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -119,6 +121,7 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
             }
 
             await LoadAsync(user);
+
             return Page();
         }
 
@@ -147,7 +150,7 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            if(Input.FirstName != user.Ad)
+            if (Input.FirstName != user.Ad)
             {
                 user.Ad = Input.FirstName;
                 await _userManager.UpdateAsync(user);
@@ -187,7 +190,7 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
             return RedirectToPage();
         }
 
-        private List<SelectListItem> GetCountries()
+        private List<SelectListItem> GetCountries(int countryId = 1)
         {
             var lstCountries = new List<SelectListItem>();
 
@@ -201,15 +204,17 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
 
             var defItem = new SelectListItem()
             {
-                Value = "",
-                Text = "----Select Country----"
+                Value = countryId.ToString(),
+                Text = _context.Countries
+                .Where(c => c.Id == countryId)
+                .OrderBy(n => n.CountryName)
+                .Select(n => n.CountryName).FirstOrDefault()
             };
 
             lstCountries.Insert(0, defItem);
-
             return lstCountries;
         }
-        private List<SelectListItem> GetCities(int countryId = 1)
+        private List<SelectListItem> GetCities(int countryId = 1, int cityId = 1)
         {
             List<SelectListItem> lstCities = _context.Cities
                 .Where(c => c.CountryId == countryId)
@@ -223,12 +228,14 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
 
             var defItem = new SelectListItem()
             {
-                Value = "",
-                Text = "----Select City----"
+                Value = cityId.ToString(),
+                Text = _context.Cities
+                .Where(c => c.Id == cityId)
+                .OrderBy(n => n.CityName)
+                .Select(n => n.CityName).FirstOrDefault()
             };
 
             lstCities.Insert(0, defItem);
-
             return lstCities;
         }
 
@@ -237,7 +244,7 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
             return _context.Cities
                 .Where(c => c.Id == cityId)
                 .OrderBy(n => n.CityName)
-                .Select(n => n.CityName).FirstOrDefault();   
+                .Select(n => n.CityName).FirstOrDefault();
         }
     }
 }
