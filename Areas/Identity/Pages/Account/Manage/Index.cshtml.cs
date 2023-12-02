@@ -8,9 +8,12 @@ using System.Security.Policy;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Bitirme.Areas.Identity.Data;
+using Bitirme.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bitirme.Areas.Identity.Pages.Account.Manage
 {
@@ -18,13 +21,20 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly DbContextSwiftShift _context;
 
+        public List<SelectListItem> Countries { get; }
+        public List<SelectListItem> Cities { get; }
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            DbContextSwiftShift context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
+            Countries = GetCountries();
+            Cities = GetCities();
         }
 
         /// <summary>
@@ -69,6 +79,12 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
 
             [Display(Name = "Soyad")]
             public string LastName { get; set; }
+
+            [Display(Name = "Ülke")]
+            public string Country { get; set; }
+
+            [Display(Name = "Şehir")]
+            public string City { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -80,13 +96,17 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
             var profilePicture = user.ProfilePicture;
             var firstName = user.Ad;
             var lastName = user.Soyad;
+            var country = user.Country.CountryName;
+            var city = GetCityName(user.CityId);
 
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
                 ProfilePicture = profilePicture,
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                Country = country,
+                City = city,
             };
         }
 
@@ -139,6 +159,18 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
                 await _userManager.UpdateAsync(user);
             }
 
+            if (Int32.Parse(Input.Country) != user.CountryId)
+            {
+                user.CountryId = Int32.Parse(Input.Country);
+                await _userManager.UpdateAsync(user);
+            }
+
+            if (Int32.Parse(Input.City) != user.CityId)
+            {
+                user.CityId = Int32.Parse(Input.City);
+                await _userManager.UpdateAsync(user);
+            }
+
             if (Request.Form.Files.Count > 0)
             {
                 IFormFile file = Request.Form.Files.FirstOrDefault();
@@ -153,6 +185,59 @@ namespace Bitirme.Areas.Identity.Pages.Account.Manage
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
+        }
+
+        private List<SelectListItem> GetCountries()
+        {
+            var lstCountries = new List<SelectListItem>();
+
+            List<Country> Countries = _context.Countries.ToList();
+
+            lstCountries = Countries.Select(ct => new SelectListItem()
+            {
+                Value = ct.Id.ToString(),
+                Text = ct.CountryName
+            }).ToList();
+
+            var defItem = new SelectListItem()
+            {
+                Value = "",
+                Text = "----Select Country----"
+            };
+
+            lstCountries.Insert(0, defItem);
+
+            return lstCountries;
+        }
+        private List<SelectListItem> GetCities(int countryId = 1)
+        {
+            List<SelectListItem> lstCities = _context.Cities
+                .Where(c => c.CountryId == countryId)
+                .OrderBy(n => n.CityName)
+                .Select(n =>
+                new SelectListItem
+                {
+                    Value = n.Id.ToString(),
+                    Text = n.CityName
+                }).ToList();
+
+            var defItem = new SelectListItem()
+            {
+                Value = "",
+                Text = "----Select City----"
+            };
+
+            lstCities.Insert(0, defItem);
+
+            return lstCities;
+        }
+
+        private string GetCityName(int cityId)
+        {
+            return _context.Cities
+                .Where(c => c.Id == cityId)
+                .OrderBy(n => n.CityName)
+                .Select(n => n.CityName).FirstOrDefault();   
         }
     }
 }
