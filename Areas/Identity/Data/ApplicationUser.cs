@@ -21,6 +21,12 @@ public class ApplicationUser : IdentityUser
 
     public string? ProfileDescription { get; set; }
 
+    public string? AdvertNumber { get; set; }
+
+    public string? DeliverNumber { get; set; }
+
+    public string? TransportNumber { get; set; }
+
     [Required]
     [ForeignKey("Country")]
     [DisplayName("Country")]

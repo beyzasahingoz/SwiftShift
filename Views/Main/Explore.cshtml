@@ -8,14 +8,28 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
+    @{
+        ViewData["Title"] = "Explore";
+    }
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header class="w3-display-container w3-wide">
-       <h1>EXPLORE</h1>
+        <h1>EXPLORE</h1>
+        @*<div class="card">
+            <div class="card-body">
+                <h5 class="card-title">İlan Detayları</h5>
+                <p class="card-text"><strong>Ürün İsmi:</strong> @Model.ProductName</p>
+                <p class="card-text"><strong>Ülke:</strong> @Model.Country</p>
+                <p class="card-text"><strong>Şehir:</strong> @Model.City</p>
+                <p class="card-text"><strong>Adres:</strong> @Model.Address</p>
+                <p class="card-text"><strong>Kilogram:</strong> @Model.ProductKg</p>
+                <p class="card-text"><strong>Not:</strong> @Model.Note</p>
+            </div>
+        </div>*@
     </header>
 </body>
 </html>
+

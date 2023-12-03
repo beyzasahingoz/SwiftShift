@@ -107,11 +107,11 @@ namespace Bitirme.Areas.Identity.Pages.Account
             /// 
 
             [Required]
-            [Display(Name = "")]
+            [Display(Name = "Ülke")]
             public int CountryId { get; set; }
 
             [Required]
-            [Display(Name = "")]
+            [Display(Name = "Şehir")]
             public int CityId { get; set; }
             
 

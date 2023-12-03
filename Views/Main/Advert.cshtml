@@ -77,7 +77,7 @@
         <div>
             <label>Ülke:</label>
             <select class="country" name="country" id="country" onchange="populateCities()">
-                <option value="turkey">Türkiye</option>
+                <option value="turkey">Turkiye@(UserManager.GetUserAsync(User).Result.Country)</option>
                 <!-- Diğer ülkeler buraya eklenebilir -->
             </select>
         </div>
@@ -85,7 +85,7 @@
         <div>
             <label>Şehir:</label>
             <select class="city" name="city" id="city" required>
-                <!-- Şehirler ülkeye göre dinamik olarak buraya eklenecek -->
+                 <option>Ankara@(UserManager.GetUserAsync(User).Result.City)</option>
             </select>
         </div>
 
@@ -109,7 +109,7 @@
         </div>
 
         <div>
-            <input class="product-add" type="submit" value="Ekle" />
+              <a class="product-add" asp-controller="Main" asp-action="Explore">Ekle</a>
         </div>
 
     </form>

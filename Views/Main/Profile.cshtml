@@ -14,13 +14,12 @@
     <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
 
     <style>
-        * {
+        body {
             margin: 0;
             padding: 0;
-        }
-
-        html, body {
-            height: 100%;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .cover-photo {
@@ -103,6 +102,25 @@
             transform: translateX(-50%);
         }
 
+        .reviews-container {
+            top: 120%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Kartlar arasındaki boşluğu ayarlar */
+        }
+
+        .card-comment {
+            top: 120%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px; /* Kart genişliği */
+            height: 200px; /* Kart yüksekliği */
+            border: 1px solid #ddd; /* Kart sınırlarını ekler */
+            border-radius: 8px; /* Kart kenar yuvarlama */
+            overflow: hidden; /* İçeriğin kart sınırlarını aşmasını önler */
+        }
+
         th, td {
             flex: 1;
             padding: 8px;
@@ -147,9 +165,9 @@
                 <h1 class="description">@(UserManager.GetUserAsync(User).Result.ProfileDescription)</h1>
             </div>
             <table class="info">
-                <th>21</th>
-                <th>22</th>
-                <th>23</th>
+                <th>@(UserManager.GetUserAsync(User).Result.TransportNumber)</th>
+                <th>@(UserManager.GetUserAsync(User).Result.AdvertNumber)</th>
+                <th>@(UserManager.GetUserAsync(User).Result.DeliverNumber)</th>
                 <tr>
                     <td>Taşıma Sayısı</td>
                     <td>İlan Sayısı</td>
@@ -157,6 +175,18 @@
                 </tr>
             </table>
             <button id="btnMsg" type="button" class="btn btn-primary mt-3">Message</button>
+            <div class="reviews-container">
+                <div class="card-comment">
+                    <div class="card-header">
+                        <h5 class="card-title">Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">By: UserName</p>
+                        <p class="card-text">Rating: Rating stars</p>
+                        <p class="card-text">Date </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 </body>
