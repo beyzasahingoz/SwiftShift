@@ -14,21 +14,31 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+    <style>
+        .product-card {
+            background-color: #fff; /* Kart arkaplan rengi */
+            border: 1px solid #ddd; /* Kart kenarlık rengi ve kalınlığı */
+            border-radius: 8px; /* Kart köşe yuvarlaklığı */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Kart gölgesi */
+            overflow: hidden; /* İçerik dışına taşan kısımları gizle */
+            margin: 20px; /* Kart arasındaki boşluk */
+            max-width: 400px; /* Kartın maksimum genişliği */
+        }
+    </style>
 </head>
 <body>
     <header class="w3-display-container w3-wide">
-        <h1>EXPLORE</h1>
-        @*<div class="card">
+        <div class="product-card">
             <div class="card-body">
                 <h5 class="card-title">İlan Detayları</h5>
-                <p class="card-text"><strong>Ürün İsmi:</strong> @Model.ProductName</p>
-                <p class="card-text"><strong>Ülke:</strong> @Model.Country</p>
-                <p class="card-text"><strong>Şehir:</strong> @Model.City</p>
-                <p class="card-text"><strong>Adres:</strong> @Model.Address</p>
-                <p class="card-text"><strong>Kilogram:</strong> @Model.ProductKg</p>
-                <p class="card-text"><strong>Not:</strong> @Model.Note</p>
+                <p class="card-text"><strong>Ürün İsmi:</strong> Telefon</p>
+                <p class="card-text"><strong>Ülke:</strong> Türkiye</p>
+                <p class="card-text"><strong>Şehir:</strong> Ankara</p>
+                <p class="card-text"><strong>Adres:</strong> xx</p>
+                <p class="card-text"><strong>Kilogram:</strong> 1</p>
+                <p class="card-text"><strong>Not:</strong> asdsdfd</p>
             </div>
-        </div>*@
+        </div>
     </header>
 </body>
 </html>

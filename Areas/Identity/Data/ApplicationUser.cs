@@ -38,5 +38,6 @@ public class ApplicationUser : IdentityUser
     [DisplayName("City")]
     public int CityId { get; set; }
     public virtual City City { get; set; }
+    public int Product_id { get; set; }
 }
 

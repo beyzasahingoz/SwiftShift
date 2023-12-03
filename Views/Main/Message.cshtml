@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@model IEnumerable<Bitirme.Models.Users>
+@using Microsoft.AspNetCore.Identity
 @using Bitirme.Areas.Identity.Data
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -8,14 +9,149 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
+    <title>Message</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container-fluid {
+            margin-top: 20px;
+        }
+
+        .row {
+            margin: 0 -15px;
+        }
+
+        .col-md-4, .col-md-8 {
+            padding: 0 15px;
+        }
+
+        .message-card {
+            background-color: #fff; /* Kart arkaplan rengi */
+            border: 1px solid #ddd; /* Kart kenarlık rengi ve kalınlığı */
+            border-radius: 8px; /* Kart köşe yuvarlaklığı */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Kart gölgesi */
+            overflow: hidden; /* İçerik dışına taşan kısımları gizle */
+            margin: 20px; /* Kart arasındaki boşluk */
+            max-width: 800px; /* Kartın maksimum genişliği */
+            max-height: 400px;
+        }
+
+        .message-user-card {
+            background-color: #fff; /* Kart arkaplan rengi */
+            border: 1px solid #ddd; /* Kart kenarlık rengi ve kalınlığı */
+            border-radius: 8px; /* Kart köşe yuvarlaklığı */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Kart gölgesi */
+            overflow: hidden; /* İçerik dışına taşan kısımları gizle */
+            margin: 20px; /* Kart arasındaki boşluk */
+            max-width: 400px; /* Kartın maksimum genişliği */
+            max-height: 400px;
+        }
+
+        .card-header {
+            background-color: #whitesmoke;
+            padding: 10px;
+        }
+
+        .list-group-item {
+            cursor: pointer;
+            border: 1px solid #dee2e6;
+            margin-bottom: -1px;
+        }
+
+            .list-group-item:hover {
+                background-color: #f8f9fa;
+            }
+
+            .list-group-item a {
+                text-decoration: none;
+            }
+
+                .list-group-item a:hover {
+                    text-decoration: underline;
+                }
+
+            .list-group-item.active {
+                z-index: 2;
+                background-color: whitesmoke;
+                border-color: whitesmoke;
+            }
+
+                .list-group-item.active a {
+                    color: #fff;
+                }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .rounded-circle {
+            height: 50px;
+        }
+    </style>
 </head>
 <body>
-    <header class="w3-display-container w3-wide">
-       <h1>MESSAGE</h1>
-    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="message-user-card">
+                    <div class="card-header">
+                        <h3>User List</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto" style="left:20px">
+                            <input type="text" class="form-control" placeholder="Search" name="query">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a asp-page="/Message" asp-route-recipientId="@(UserManager.GetUserAsync(User).Result.Id)">
+                                @(UserManager.GetUserAsync(User).Result.Ad)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="message-card">
+                    <div class="card-header">
+                        @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+                        {
+                            <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
+                        }
+                        else
+                        {
+                            <img class="rounded-circle" src="~/images/profilePicture.png">
+                        }
+                        <h3>@(UserManager.GetUserAsync(User).Result.Ad) @(UserManager.GetUserAsync(User).Result.Soyad)</h3>
+                    </div>
+                    <div style="margin-left:700px">
+                        <form method="post">
+                            <!-- <input type="text" asp-for="NewMessage" /> -->
+                            <button class="btn btn-outline-secondary">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
