@@ -102,6 +102,11 @@
         .rounded-circle {
             height: 50px;
         }
+
+        .user-name a {
+            text-decoration: none;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -141,7 +146,9 @@
                         {
                             <img class="rounded-circle" src="~/images/profilePicture.png">
                         }
-                        <h3>@(UserManager.GetUserAsync(User).Result.Ad) @(UserManager.GetUserAsync(User).Result.Soyad)</h3>
+                        <h3 class="user-name">
+                            <a asp-controller="Main" asp-action="Profile">@(UserManager.GetUserAsync(User).Result.Ad) @(UserManager.GetUserAsync(User).Result.Soyad)</a>
+                        </h3>
                     </div>
                     <div style="margin-left:700px">
                         <form method="post">

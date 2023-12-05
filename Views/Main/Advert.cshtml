@@ -15,10 +15,19 @@
     <title>İlan Ekle</title>
     <style>
         .product-form {
+            width: 550px;
+            height: 350px;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto; /* Center horizontally */
+            position: absolute; /* Center vertically */
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0; /* Center vertically */
+            text-align: center;
         }
 
         h2 {
@@ -33,12 +42,13 @@
         }
 
         .address, .product-name, .product-add, .country, .city, .product-note, .product-kg {
-            width: 100%;
-            padding: 8px;
+            width: 150px;
+            padding: 2px;
             margin: 6px 0;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
+            text-align: center;
         }
 
         .country, .city, .product-kg {
@@ -47,9 +57,16 @@
 
         .product-note {
             resize: vertical;
+            padding: 2px;
+        }
+
+        .product-add-container {
+            margin-top: 420px;
+            text-align: center;
         }
 
         .product-add {
+            text-align: center;
             background-color: #4caf50;
             color: white;
             padding: 10px 15px;
@@ -64,55 +81,52 @@
     </style>
 </head>
 <body>
-    <h2>İlan Ekle</h2>
-
     <form class="product-form" method="post" action="SubmitForm">
         <!-- Formun gönderileceği controller ve action belirtilmelidir -->
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <label>Ürün İsmi:</label>
+                    <input class="product-name" type="text" name="productName" required />
+                </div>
+                <div>
+                    <label>Ülke:</label>
+                    <select class="country" name="country" id="country" onchange="populateCities()">
+                        <option value="turkey">Turkiye@(UserManager.GetUserAsync(User).Result.Country)</option>
+                        <!-- Diğer ülkeler buraya eklenebilir -->
+                    </select>
+                </div>
+                <div>
+                    <label>Şehir:</label>
+                    <select class="city" name="city" id="city" required>
+                        <option>Ankara@(UserManager.GetUserAsync(User).Result.City)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <label>Adres:</label>
+                    <input class="address" type="text" name="address" required />
+                </div>
+                <div>
+                    <label>Kilogram:</label>
+                    <select class="product-kg" name="weight">
+                        <option value="1">1 kg</option>
+                        <option value="2">2 kg</option>
+                        <!-- Diğer kilogram miktarları buraya eklenebilir -->
+                    </select>
+                </div>
 
-        <div>
-            <label>Ürün İsmi:</label>
-            <input class="product-name" type="text" name="productName" required />
+                <div>
+                    <label>Not:</label>
+                    <textarea class="product-note" name="note" rows="1" cols="50"></textarea>
+                </div>
+            </div>
         </div>
-
-        <div>
-            <label>Ülke:</label>
-            <select class="country" name="country" id="country" onchange="populateCities()">
-                <option value="turkey">Turkiye@(UserManager.GetUserAsync(User).Result.Country)</option>
-                <!-- Diğer ülkeler buraya eklenebilir -->
-            </select>
-        </div>
-
-        <div>
-            <label>Şehir:</label>
-            <select class="city" name="city" id="city" required>
-                 <option>Ankara@(UserManager.GetUserAsync(User).Result.City)</option>
-            </select>
-        </div>
-
-        <div>
-            <label>Adres:</label>
-            <input class="address" type="text" name="address" required />
-        </div>
-
-        <div>
-            <label>Kilogram:</label>
-            <select class="product-kg" name="weight">
-                <option value="1">1 kg</option>
-                <option value="2">2 kg</option>
-                <!-- Diğer kilogram miktarları buraya eklenebilir -->
-            </select>
-        </div>
-
-        <div>
-            <label>Not:</label>
-            <textarea class="product-note" name="note" rows="4" cols="50"></textarea>
-        </div>
-
-        <div>
-              <a class="product-add" asp-controller="Main" asp-action="Explore">Ekle</a>
-        </div>
-
     </form>
+    <div class="product-add-container">
+        <a class="product-add" asp-controller="Main" asp-action="Explore">Ekle</a>
+    </div>
 
     <script>
         function populateCities() {
