@@ -17,6 +17,10 @@ public class DbContextSwiftShift : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Country> Countries { get; set; }
     public virtual DbSet<City> Cities { get; set; }
+
+    public virtual DbSet<District> District { get; set; }
+
+    public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
     public DbSet<Explore> tbl_products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)

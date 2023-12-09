@@ -22,6 +22,9 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations.Schema;
 using Bitirme.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using Microsoft.CodeAnalysis;
+using Newtonsoft.Json.Linq;
 
 namespace Bitirme.Areas.Identity.Pages.Account
 {
@@ -36,6 +39,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
         private readonly DbContextSwiftShift _context;
         public List<SelectListItem> Countries { get; }
         public List<SelectListItem> Cities { get; }
+        public List<SelectListItem> District { get; }
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -55,6 +59,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
             _context = context;
             Countries = GetCountries();
             Cities = GetCities();
+            District = GetDistrict();
         }
 
         /// <summary>
@@ -113,7 +118,10 @@ namespace Bitirme.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Şehir")]
             public int CityId { get; set; }
-            
+
+            [Required]
+            [Display(Name = "İlçe")]
+            public int DistrictId { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -146,10 +154,19 @@ namespace Bitirme.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+                string country = getCountry(Input.CountryId);
+                string city = getCity(Input.CityId);
+                string district = getDistrict(Input.DistrictId);
+
+                Coordinates coordinates = GetCoordinates(country, city, district).Result;
+
                 user.Ad = Input.Ad;
                 user.Soyad = Input.Soyad;
                 user.CountryId = Input.CountryId;
                 user.CityId = Input.CityId;
+                user.DistrictId = Input.DistrictId;
+                user.Latitude = coordinates.Latitude;
+                user.Longitude = coordinates.Longitude;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -237,6 +254,28 @@ namespace Bitirme.Areas.Identity.Pages.Account
             return lstCountries;
         }
 
+        private string getCountry(int countryId)
+        {
+           return _context.Countries
+                .Where(c => c.Id == countryId)
+                .OrderBy(n => n.CountryName)
+                .Select(c => c.CountryName).ToList()[0];
+        }
+        private string getCity(int cityId)
+        {
+            return _context.Cities
+                 .Where(c => c.Id == cityId)
+                 .OrderBy(n => n.CityName)
+                 .Select(c => c.CityName).ToList()[0];
+        }
+        private string getDistrict(int districtId)
+        {
+            return _context.District
+                 .Where(c => c.Id == districtId)
+                 .OrderBy(n => n.DistrictName)
+                 .Select(c => c.DistrictName).ToList()[0];
+        }
+
         private List<SelectListItem> GetCities(int countryId = 1)
         {
             List<SelectListItem> lstCities = _context.Cities
@@ -259,6 +298,67 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
             return lstCities;
         }
-        
+
+        private List<SelectListItem> GetDistrict(int cityId = 1)
+        {
+            List<SelectListItem> lstDistrict = _context.District
+                .Where(c => c.CityId == cityId)
+                .OrderBy(n => n.DistrictName)
+                .Select(n =>
+                new SelectListItem
+                {
+                    Value = n.Id.ToString(),
+                    Text = n.DistrictName
+                }).ToList();
+
+            var defItem = new SelectListItem()
+            {
+                Value = "",
+                Text = "----Select District----"
+            };
+
+            lstDistrict.Insert(0, defItem);
+
+            return lstDistrict;
+        }
+        public static async Task<Coordinates> GetCoordinates(string country, string city, string district)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    var address = $"{city}, {district}, {country}";
+                    var apiUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key=AIzaSyC002asiPqu9JT7fbl_wAvmlV3uuZLwdvE";
+
+                    HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = await response.Content.ReadAsStringAsync();
+                        var data = JsonConvert.DeserializeObject<dynamic>(result);
+                        string lat = "", longi = "";
+                        foreach (var item in data.results)
+                        {
+                            lat = Convert.ToString(item.geometry.location.lat);
+                            longi = Convert.ToString(item.geometry.location.lng);
+                        }
+                        return new Coordinates { Latitude = lat, Longitude = longi };
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                }
+
+                return null;
+            }
+        }
+    }
+
+    public class Coordinates
+    {
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }
+

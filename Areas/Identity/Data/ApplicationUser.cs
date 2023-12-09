@@ -38,6 +38,15 @@ public class ApplicationUser : IdentityUser
     [DisplayName("City")]
     public int CityId { get; set; }
     public virtual City City { get; set; }
-    public int Product_id { get; set; }
+
+    [Required]
+    [ForeignKey("District")]
+    [DisplayName("District")]
+    public int DistrictId { get; set; }
+    public virtual District District { get; set; }
+
+    public string Latitude { get; set; }
+    public string Longitude { get; set; }
+    public int? Product_id { get; set; }
 }
 

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Bitirme.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DbContextSwiftShiftConnection") ?? throw new InvalidOperationException("Connection string 'DbContextSwiftShiftConnection' not found.");
