@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-auto">
                         <input type="text" class="form-control" placeholder="Search" name="query">
-                            <button class="btn btn-outline-secondary" type="submit">Search</button>
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
                     </div>
                 </div>
             </form>
@@ -55,14 +55,7 @@
         <li class="nav-item" style="align-self: center;margin-right: 80px;">
             <div class="dropdown">
                 <button type="button" class="border-0 rounded-circle" data-toggle="dropdown" style="height:60px">
-                    @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
-                    {
-                        <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
-                    }
-                    else
-                    {
-                        <img class="rounded-circle" src="~/images/profilePicture.png">
-                    }
+                    <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
                 </button>
                 <div class="dropdown-menu" style="margin-left: -20px">
                     <a class="dropdown-item" asp-controller="Main" asp-action="Profile">

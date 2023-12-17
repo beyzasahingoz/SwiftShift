@@ -2,7 +2,8 @@
 using Bitirme.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Bitirme.Controllers
 {
@@ -11,10 +12,13 @@ namespace Bitirme.Controllers
         private readonly ILogger<HomeController> _logger;
 
         private readonly DbContextSwiftShift _context;
-        public HomeController(ILogger<HomeController> logger, DbContextSwiftShift context)
+
+        private readonly UserManager<ApplicationUser> _userManager;
+        public HomeController(ILogger<HomeController> logger, DbContextSwiftShift context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -29,7 +33,9 @@ namespace Bitirme.Controllers
         
         public List<ApplicationUser> GetAllLocation()
         {
-            return _context.AspNetUsers.ToList();
+            string userId = _userManager.GetUserId(User);
+            
+            return _context.AspNetUsers.Where(x => x.Id != userId).ToList();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

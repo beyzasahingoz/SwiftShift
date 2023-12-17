@@ -1,6 +1,11 @@
 ﻿@{
     ViewData["Title"] = "HOme";
 }
+@using Microsoft.AspNetCore.Identity
+@using Bitirme.Areas.Identity.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @*<!DOCTYPE html>
 <html>
@@ -116,6 +121,48 @@
         width: 900px;
     }
 
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        max-width: 300px;
+        margin: auto;
+        text-align: center;
+    }
+
+    .title {
+        color: grey;
+        font-size: 18px;
+    }
+
+    .rounded-circle.index{
+        height: 60px;
+        width: 60px;
+        margin-right: 100px;
+        margin-left: 100px;
+    }
+
+    button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+    }
+
+    a {
+        text-decoration: none;
+        font-size: 22px;
+        color: black;
+    }
+
+        button:hover, a:hover {
+            opacity: 0.7;
+        }
+
     /*
          * Optional: Makes the sample page fill the window.
          */
@@ -149,31 +196,45 @@
 
                 for (var i = 0; i < data.length; i++)
                 {
-                    console.log(data[i].ad)
-                    console.log(typeof data[i].latitude)
-                    marker[i]= new google.maps.Marker({
-                        position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
-                        map: map
-                    });
+                    //console.log(typeof id)
+                    //console.log(data[i].id, id)
+                    //if (data[i].id !== id)
+                    //{
+                    console.log(data[i].profilepicture)
+                        marker[i] = new google.maps.Marker({
+                            position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
+                            map: map
+                        });
 
-                    contentString[i] = '<div id="content">' +
-                        '<div id="siteNotice">' +
-                        '</div>' +
-                        '<h1 id="firstHeading" class="firstHeading">Test</h1>' +
-                        '<div id="bodyContent">' +
-                        '<p>Test</p>';
+                        contentString[i] = '<div class="card">' +
+                        '<img class="rounded-circle index" src="data:image/*;base64, ' + data[i].profilePicture + '">' +
+                            '<h2>' + data[i].ad + ' ' + data[i].soyad + '</h2>' +
+                            '<p>' + data[i].point + '</p>' +
+                            '<p>' + data[i].profileDescription + '</p>' +
+                            '<p><button>Contact</button></p>' +
+                            '</div>';
 
-                    infowindow[i] = new google.maps.InfoWindow({
-                        content: contentString[i]
-                    });
-                    marker[i].addListener('mouseover', function ()
-                    {
-                        infowindow[i].open(map, marker[i]);
-                    });
+                        infowindow[i] = new google.maps.InfoWindow({
+                            content: contentString[i]
+                        });
+                        var markerValue = marker[i];
+                        google.maps.event.addListener(marker[i], 'mouseover', (function (markerValue, i)
+                        {
+                            return function ()
+                            {
+                                infowindow[i].open(map, marker[i]);
+                            }
+                        })(marker[i], i));
+                        //google.maps.event.addListener(marker[i], 'mouseout', (function (markerValue, i)
+                        //{
+                        //    return function ()
+                        //    {
+                        //        infowindow[i].close();
+                        //    }
+                        //})(marker[i], i));
+                    //}
                 }
-
-            })
-
+            });
         }
     </script>
     <script async defer
