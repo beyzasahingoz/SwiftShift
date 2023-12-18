@@ -160,6 +160,8 @@ namespace Bitirme.Areas.Identity.Pages.Account
                 user.DistrictId = Input.DistrictId;
                 user.Latitude = coordinates.Latitude;
                 user.Longitude = coordinates.Longitude;
+                user.Point = 0;
+                user.ProfileDescription = "";
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

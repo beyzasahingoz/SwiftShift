@@ -17,7 +17,7 @@ public class ApplicationUser : IdentityUser
     public string Soyad { get; set; }
     public byte[]? ProfilePicture { get; set; }
 
-    public string? Point { get; set; }
+    public decimal? Point { get; set; }
 
     public string? ProfileDescription { get; set; }
 

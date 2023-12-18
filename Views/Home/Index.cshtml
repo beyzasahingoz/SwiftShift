@@ -113,9 +113,9 @@
 
 <style>
     /*
-         * Always set the map height explicitly to define the size of the div element
-         * that contains the map.
-         */
+             * Always set the map height explicitly to define the size of the div element
+             * that contains the map.
+             */
     #map {
         height: 400px;
         width: 900px;
@@ -133,7 +133,7 @@
         font-size: 18px;
     }
 
-    .rounded-circle.index{
+    .rounded-circle.index {
         height: 60px;
         width: 60px;
         margin-right: 100px;
@@ -164,14 +164,14 @@
         }
 
     /*
-         * Optional: Makes the sample page fill the window.
-         */
+             * Optional: Makes the sample page fill the window.
+             */
     /*html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }*/
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }*/
 </style>
 
 <br />
@@ -189,50 +189,52 @@
 
             $.get("@Url.Action("GetAllLocation", "Home")", function (data)
             {
-                debugger;
                 var marker = [];
                 var contentString = [];
                 var infowindow = [];
 
                 for (var i = 0; i < data.length; i++)
                 {
-                    //console.log(typeof id)
-                    //console.log(data[i].id, id)
-                    //if (data[i].id !== id)
-                    //{
-                    console.log(data[i].profilepicture)
-                        marker[i] = new google.maps.Marker({
-                            position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
-                            map: map
-                        });
+                    var image = {
+                        url: 'data:image/*;base64, ' + data[i].profilePicture,
+                        size: new google.maps.Size(50, 50),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(25, 25),
+                        scaledSize: new google.maps.Size(50, 50)
+                    };
 
-                        contentString[i] = '<div class="card">' +
+                    marker[i] = new google.maps.Marker({
+                        position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
+                        map: map,
+                        icon: image
+                    });
+
+                    contentString[i] = '<div class="card">' +
                         '<img class="rounded-circle index" src="data:image/*;base64, ' + data[i].profilePicture + '">' +
-                            '<h2>' + data[i].ad + ' ' + data[i].soyad + '</h2>' +
-                            '<p>' + data[i].point + '</p>' +
-                            '<p>' + data[i].profileDescription + '</p>' +
-                            '<p><button>Contact</button></p>' +
-                            '</div>';
+                        '<h2>' + data[i].ad + ' ' + data[i].soyad + '</h2>' +
+                        '<p>Puan: ' + data[i].point + '</p>' +
+                        '<p>Tanım: ' + data[i].profileDescription + '</p>' +
+                        '<p><button>İletişim Kur</button></p>' +
+                        '</div>';
 
-                        infowindow[i] = new google.maps.InfoWindow({
-                            content: contentString[i]
-                        });
-                        var markerValue = marker[i];
-                        google.maps.event.addListener(marker[i], 'mouseover', (function (markerValue, i)
+                    infowindow[i] = new google.maps.InfoWindow({
+                        content: contentString[i]
+                    });
+                    var markerValue = marker[i];
+                    google.maps.event.addListener(marker[i], 'mouseover', (function (markerValue, i)
+                    {
+                        return function ()
                         {
-                            return function ()
-                            {
-                                infowindow[i].open(map, marker[i]);
-                            }
-                        })(marker[i], i));
-                        //google.maps.event.addListener(marker[i], 'mouseout', (function (markerValue, i)
-                        //{
-                        //    return function ()
-                        //    {
-                        //        infowindow[i].close();
-                        //    }
-                        //})(marker[i], i));
-                    //}
+                            infowindow[i].open(map, marker[i]);
+                        }
+                    })(marker[i], i));
+                    //google.maps.event.addListener(marker[i], 'mouseout', (function (markerValue, i)
+                    //{
+                    //    return function ()
+                    //    {
+                    //        infowindow[i].close();
+                    //    }
+                    //})(marker[i], i));
                 }
             });
         }
