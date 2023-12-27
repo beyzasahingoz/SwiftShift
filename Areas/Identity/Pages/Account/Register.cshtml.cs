@@ -228,7 +228,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
         private byte[] ImageToByteArr()
         {
-            Image image = Image.FromFile("C:\\Users\\beyza\\source\\repos\\SwiftShift\\wwwroot\\images\\profilePicture.png");
+            Image image = Image.FromFile("wwwroot\\images\\profilePicture.png");
             using (var ms = new MemoryStream())
             {
                 image.Save(ms, image.RawFormat);

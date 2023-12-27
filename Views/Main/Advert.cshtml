@@ -1,9 +1,8 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using Bitirme.Areas.Identity.Data
-
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-</html>
+﻿@using Bitirme.Views.Main
+@model AdvertModel
+@{
+    ViewData["Title"] = "Advert";
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +11,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
-    <title>İlan Ekle</title>
     <style>
         .product-form {
             width: 550px;
@@ -80,46 +78,47 @@
             }
     </style>
 </head>
+    <h1>@ViewData["Title"]</h1>
 <body>
-    <form class="product-form" method="post" action="SubmitForm">
-        <!-- Formun gönderileceği controller ve action belirtilmelidir -->
-        <div class="row">
+    <form id="productForm" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-row">
             <div class="col-md-6">
                 <div>
-                    <label>Ürün İsmi:</label>
-                    <input class="product-name" type="text" name="productName" required />
+                    <label asp-for="Input.ProductName"></label>
+                    <input asp-for="Input.ProductName" class="form-control" />
+                    <span asp-validation-for="Input.ProductName" class="text-danger"></span>
+                </div>
+                @*<div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.Country"></label>
+                        <select asp-for="Input.Country" asp-items="@(Model.Countries)" class="form-control"></select>
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
                 </div>
                 <div>
-                    <label>Ülke:</label>
-                    <select class="country" name="country" id="country" onchange="populateCities()">
-                        <option value="turkey">Turkiye@(UserManager.GetUserAsync(User).Result.Country)</option>
-                        <!-- Diğer ülkeler buraya eklenebilir -->
-                    </select>
-                </div>
-                <div>
-                    <label>Şehir:</label>
-                    <select class="city" name="city" id="city" required>
-                        <option>Ankara@(UserManager.GetUserAsync(User).Result.City)</option>
-                    </select>
-                </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.City"></label>
+                        <select asp-for="Input.City" asp-items="@(Model.Cities)" class="form-control"></select>
+                        <span asp-validation-for="Input.City" class="text-danger"></span>
+                    </div>
+                </div>*@
             </div>
             <div class="col-md-6">
                 <div>
-                    <label>Adres:</label>
-                    <input class="address" type="text" name="address" required />
+                    <label asp-for="Input.Address"></label>
+                    <input asp-for="Input.Address" class="form-control" />
+                    <span asp-validation-for="Input.Address" class="text-danger"></span>
                 </div>
                 <div>
-                    <label>Kilogram:</label>
-                    <select class="product-kg" name="weight">
-                        <option value="1">1 kg</option>
-                        <option value="2">2 kg</option>
-                        <!-- Diğer kilogram miktarları buraya eklenebilir -->
-                    </select>
+                    <label asp-for="Input.ProductKg"></label>
+                    <input asp-for="Input.ProductKg" class="form-control" />
+                    <span asp-validation-for="Input.ProductKg" class="text-danger"></span>
                 </div>
-
                 <div>
-                    <label>Not:</label>
-                    <textarea class="product-note" name="note" rows="1" cols="50"></textarea>
+                    <label asp-for="Input.ProductNote"></label>
+                    <input asp-for="Input.ProductNote" class="form-control" />
+                    <span asp-validation-for="Input.ProductNote" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -128,21 +127,21 @@
         <a class="product-add" asp-controller="Main" asp-action="Explore">Ekle</a>
     </div>
 
-    <script>
-        function populateCities() {
-            var country = document.getElementById("country").value;
-            var cityDropdown = document.getElementById("city");
+    @* <script>
+    function populateCities() {
+    var country = document.getElementById("country").value;
+    var cityDropdown = document.getElementById("city");
 
-            // Şehirleri ülkeye göre dinamik olarak değiştir
-            // Bu verileri dinamik olarak bir veritabanından çekebilirsiniz.
-            if (country === "turkey") {
-                cityDropdown.innerHTML = "<option value='istanbul'>İstanbul</option><option value='ankara'>Ankara</option><option value='izmir'>İzmir</option>";
-            } else {
-                // Diğer ülkelerin şehirleri buraya eklenecek
-                cityDropdown.innerHTML = ""; // Başka bir ülke seçildiğinde şehirleri sıfırla
-            }
-        }
-    </script>
+    // Şehirleri ülkeye göre dinamik olarak değiştir
+    // Bu verileri dinamik olarak bir veritabanından çekebilirsiniz.
+    if (country === "turkey") {
+    cityDropdown.innerHTML = "<option value='istanbul'>İstanbul</option><option value='ankara'>Ankara</option><option value='izmir'>İzmir</option>";
+    } else {
+    // Diğer ülkelerin şehirleri buraya eklenecek
+    cityDropdown.innerHTML = ""; // Başka bir ülke seçildiğinde şehirleri sıfırla
+    }
+    }
+    </script>*@
 
 </body>
 </html>

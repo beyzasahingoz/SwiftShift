@@ -47,6 +47,7 @@ public class ApplicationUser : IdentityUser
 
     public string Latitude { get; set; }
     public string Longitude { get; set; }
-    public int? Product_id { get; set; }
+    public int? ProductId { get; set; }
+    public virtual Product Product { get; set; }
 }
 
