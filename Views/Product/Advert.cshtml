@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Bitirme.Models.Product>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+    <style>
+        .product-form {
+            width: 550px;
+            height: 350px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto; /* Center horizontally */
+            position: absolute; /* Center vertically */
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0; /* Center vertically */
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .address, .product-name, .product-add, .country, .city, .product-note, .product-kg {
+            width: 150px;
+            padding: 2px;
+            margin: 6px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .country, .city, .product-kg {
+            cursor: pointer;
+        }
+
+        .product-note {
+            resize: vertical;
+            padding: 2px;
+        }
+
+        .product-add-container {
+            margin-top: 420px;
+            text-align: center;
+        }
+
+        .product-add {
+            text-align: center;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .product-add:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<h1>Advert</h1>
+<body>
+    <section>
+        @using (Html.BeginForm("Advert", "Product"))
+        {
+            <div class="col-md-6">
+                <input type="text" name="productName" /> <br>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <input type="text" name="address" /> <br>
+                </div>
+                <div>
+                    <input type="text" name="productKg" /> <br>
+                </div>
+                <div>
+                    <input type="text" name="productNote" /> <br>
+                </div>
+                <div>
+                   <select name="countryId">
+                        @foreach (var country in ViewBag.Countries)
+                        {
+                            <option value="@country.Value">@country.Text</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                   <select name="cityId">
+                        @foreach (var city in ViewBag.Cities)
+                        {
+                            <option value="@city.Value">@city.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <input type="submit" value="Add" />
+        }
+    </section>
+    @*<div>
+    <div class="form-group col-md-6">
+    <label asp-for="Input.Country"></label>
+    <select asp-for="Input.Country" asp-items="@(Model.Countries)" class="form-control"></select>
+    <span asp-validation-for="Input.Country" class="text-danger"></span>
+    </div>
+    </div>
+    <div>
+    <div class="form-group col-md-6">
+    <label asp-for="Input.City"></label>
+    <select asp-for="Input.City" asp-items="@(Model.Cities)" class="form-control"></select>
+    <span asp-validation-for="Input.City" class="text-danger"></span>
+    </div>
+    </div>*@
+</body>
+</html>

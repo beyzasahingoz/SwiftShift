@@ -19,13 +19,8 @@ namespace Bitirme.Models
         [Display(Name = "Not")]
         public string ProductNote { get; set; }
 
-        [Required]
-        [MaxLength(75)]
-        public string CityName { get; set; }
+        public int CityId { get; set; }
 
-        [ForeignKey("Country")]
         public int CountryId { get; set; }
-
-        public virtual string Country { get; set; }
     }
 }
