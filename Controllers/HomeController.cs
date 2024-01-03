@@ -4,9 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bitirme.Controllers
 {
+    [Authorize]
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -24,6 +28,31 @@ namespace Bitirme.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Message()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.CurrentUserName = currentUser.UserName;
+            }
+            var messages = await _context.Messages.ToListAsync();
+            return View(messages); 
+        }
+
+        public async Task<IActionResult> Create(Message message)
+        {
+            if (ModelState.IsValid)
+            {
+                message.UserName = User.Identity.Name;
+                var sender = await _userManager.GetUserAsync(User);
+                message.UserID = sender.Id;
+                await _context.Messages.AddAsync(message);
+                await _context.SaveChangesAsync();
+                return View(message);
+            }
+            return Error();
         }
 
         public IActionResult Privacy()

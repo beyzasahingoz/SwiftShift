@@ -214,7 +214,7 @@
                         '<h2>' + data[i].ad + ' ' + data[i].soyad + '</h2>' +
                         '<p>Puan: ' + data[i].point + '</p>' +
                         '<p>Tanım: ' + data[i].profileDescription + '</p>' +
-                        '<p><button>İletişim Kur</button></p>' +
+                        '<p><button id="contactButton" onclick="openContactPage()">İletişim Kur</button></p>' +
                         '</div>';
 
                     infowindow[i] = new google.maps.InfoWindow({
@@ -237,6 +237,12 @@
                     //})(marker[i], i));
                 }
             });
+        }
+
+        function openContactPage()
+        {
+            var url = '@Url.Action("Message", "Home")';
+            window.location.href = url;
         }
     </script>
     <script async defer

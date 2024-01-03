@@ -23,15 +23,20 @@ public class DbContextSwiftShift : IdentityDbContext<ApplicationUser>
     public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
     public DbSet<Product> tbl_products { get; set; }
 
+    public DbSet<Message> Messages { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
 
         builder.ApplyConfiguration(new ApplicationUserEntityConfiguration());
         builder.ApplyConfiguration(new ProductEntityConfiguration());
+
+        builder.Entity<Message>()
+            .HasOne<ApplicationUser>(a => a.Sender)
+            .WithMany(d => d.Messages)
+            .HasForeignKey(d => d.UserID);
+
         //builder.ApplyConfiguration(new CountryEntityConfiguration());
         //builder.ApplyConfiguration(new CityEntityConfiguration());
     }

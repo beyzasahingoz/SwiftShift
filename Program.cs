@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Bitirme.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using Bitirme.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DbContextSwiftShiftConnection") ?? throw new InvalidOperationException("Connection string 'DbContextSwiftShiftConnection' not found.");
@@ -22,6 +24,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //{
@@ -51,7 +54,7 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapRazorPages();
-
+app.MapHub<ChatHub>("/ChatHub");
 
 app.MapControllerRoute(
     name: "default",

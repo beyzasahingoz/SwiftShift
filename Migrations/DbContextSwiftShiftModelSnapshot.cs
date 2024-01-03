@@ -207,6 +207,36 @@ namespace Bitirme.Migrations
                     b.ToTable("District");
                 });
 
+            modelBuilder.Entity("Bitirme.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("When")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Bitirme.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
@@ -239,7 +269,6 @@ namespace Bitirme.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ProductName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -445,6 +474,17 @@ namespace Bitirme.Migrations
                     b.Navigation("City");
                 });
 
+            modelBuilder.Entity("Bitirme.Models.Message", b =>
+                {
+                    b.HasOne("Bitirme.Areas.Identity.Data.ApplicationUser", "Sender")
+                        .WithMany("Messages")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -494,6 +534,11 @@ namespace Bitirme.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Bitirme.Areas.Identity.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

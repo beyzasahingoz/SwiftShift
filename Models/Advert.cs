@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bitirme.Models
 {
-    public class Adverts
+    public class Advert
     {
         public int UserId { get; set; }
         [Key]

@@ -13,6 +13,10 @@ namespace Bitirme.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser
 {
+    public ApplicationUser()
+    {
+        Messages = new HashSet<Message>();
+    }
     public string Ad { get; set; }
     public string Soyad { get; set; }
     public byte[]? ProfilePicture { get; set; }
@@ -49,5 +53,7 @@ public class ApplicationUser : IdentityUser
     public string Longitude { get; set; }
     public int? ProductId { get; set; }
     public virtual Product Product { get; set; }
+
+    public virtual ICollection<Message> Messages { get; set; }
 }
 
