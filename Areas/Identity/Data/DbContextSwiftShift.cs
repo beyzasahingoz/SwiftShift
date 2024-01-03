@@ -59,8 +59,8 @@ internal class ProductEntityConfiguration : IEntityTypeConfiguration<Product>
     {
         builder.Property(x => x.ProductId);
         builder.Property(x => x.ProductName).HasMaxLength(255);
-        builder.Property(x => x.Country).HasMaxLength(255);
-        builder.Property(x => x.CityName).HasMaxLength(255);
+        builder.Property(x => x.CountryId);
+        builder.Property(x => x.CityId);
         builder.Property(x => x.Address).HasMaxLength(255);
         builder.Property(x => x.ProductKg).HasMaxLength(255);
         builder.Property(x => x.ProductNote).HasMaxLength(255);

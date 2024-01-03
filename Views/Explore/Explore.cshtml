@@ -1,7 +1,7 @@
-﻿@*@using Bitirme.Views.Main
+﻿@using Bitirme.Views.Main
 @using Microsoft.AspNetCore.Identity
 @using Bitirme.Areas.Identity.Data
-@model ExploreModel
+@model IEnumerable<Bitirme.Models.Explore>
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 <!DOCTYPE html>
@@ -45,29 +45,33 @@
 </head>
 <body>
     <header class="w3-display-container w3-wide">
-        @foreach (var explore in Model.Explores)
-        {
-            <div class="product-card">
-                <div class="card-header">
-                    <h5 class="card-title">İlan Detayları</h5>
-                </div>
-                <div class="form-group col-md-6">
-                </div>
-                <div class="card-body">
-                    <p class="card-text"><strong>Ürün İsmi:</strong> @explore.ProductName</p>
-                    <p class="card-text"><strong>Ülke:</strong> @explore.Country</p>
-                    <p class="card-text"><strong>Şehir:</strong> @explore.City</p>
-                    <p class="card-text"><strong>Adres:</strong> @explore.Address</p>
-                    <p class="card-text"><strong>Kilogram:</strong> @explore.ProductKg</p>
-                    <p class="card-text"><strong>Not:</strong> @explore.Note</p>
-                </div>
-                <div class="get-contact">
-                    <a class="btn-get-contact" asp-controller="Main" asp-action="Message">İletişim Kur</a>
-                </div>
+        <div class="container">
+            <div class="row">
+                @foreach (var explore in Model)
+                {
+                    <div class="col-md-4">
+                        <div class="product-card">
+                            <div class="card-header">
+                                <h5 class="card-title">İlan Detayları</h5>
+                            </div>
+                            <div class="form-group col-md-6">
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text"><strong>Ürün İsmi:</strong> @explore.ProductName</p>
+                                <p class="card-text"><strong>Ülke:</strong> @explore.Country</p>
+                                <p class="card-text"><strong>Şehir:</strong> @explore.City</p>
+                                <p class="card-text"><strong>Adres:</strong> @explore.Address</p>
+                                <p class="card-text"><strong>Kilogram:</strong> @explore.ProductKg</p>
+                                <p class="card-text"><strong>Not:</strong> @explore.Note</p>
+                            </div>
+                            <div class="get-contact">
+                                <a class="btn-get-contact" asp-controller="Main" asp-action="Message">İletişim Kur</a>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
-        }
+        </div>
     </header>
 </body>
 </html>
-
-*@
