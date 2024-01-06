@@ -30,7 +30,7 @@ namespace Bitirme.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Message()
+        public async Task<IActionResult> Message(string receiverId,string receiverUsername)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (User.Identity.IsAuthenticated)
@@ -45,12 +45,13 @@ namespace Bitirme.Controllers
         {
             if (ModelState.IsValid)
             {
-                message.UserName = User.Identity.Name;
+                message.SenderUserName = User.Identity.Name;
                 var sender = await _userManager.GetUserAsync(User);
-                message.UserID = sender.Id;
+                message.SenderUserID = sender.Id;
                 await _context.Messages.AddAsync(message);
                 await _context.SaveChangesAsync();
-                return View(message);
+                var messages = await _context.Messages.ToListAsync();
+                return View("Message",messages);
             }
             return Error();
         }

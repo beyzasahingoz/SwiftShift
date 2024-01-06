@@ -35,7 +35,7 @@ public class DbContextSwiftShift : IdentityDbContext<ApplicationUser>
         builder.Entity<Message>()
             .HasOne<ApplicationUser>(a => a.Sender)
             .WithMany(d => d.Messages)
-            .HasForeignKey(d => d.UserID);
+            .HasForeignKey(d => d.SenderUserID);
 
         //builder.ApplyConfiguration(new CountryEntityConfiguration());
         //builder.ApplyConfiguration(new CityEntityConfiguration());

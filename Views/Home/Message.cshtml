@@ -16,7 +16,7 @@
                 @foreach (var message in Model.OrderBy(m => m.When))
                 {
                     string containerClass, timePosition, textAlign, contcolor, offset;
-                    if (userName == message.UserName)
+                    if (userName == message.SenderUserName)
                     {
                         containerClass = "container darker";
                         timePosition = "time-right text-light";
@@ -37,7 +37,7 @@
                         <div class="@offset">
                             <div class="@containerClass @contcolor">
 
-                                <p class="sender @textAlign">@message.UserName</p>
+                                <p class="sender @textAlign">@message.SenderUserName</p>
                                 <p class="@textAlign">@message.Text</p>
                                 <span class="@timePosition">@message.When.ToString("M/dd/yyyy hh:MM tt")</span>
                             </div>

@@ -7,13 +7,20 @@ namespace Bitirme.Models
     {
         public int Id { get; set; }
         [Required]
-        public string UserName { get; set; }
+        public string SenderUserName { get; set; }
+
+        [Required]
+        public string ReceiverUserName { get; set; }
+
         [Required]
         public string Text { get; set; }
         public DateTime When { get; set; }
 
-        public string UserID { get; set; }
+        public string SenderUserID { get; set; }
         public virtual ApplicationUser Sender { get; set; }
+
+        public string ReceiverUserID { get; set; }
+        public virtual ApplicationUser Receiver { get; set; }
 
         public Message()
         {

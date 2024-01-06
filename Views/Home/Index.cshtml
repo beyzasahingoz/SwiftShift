@@ -208,13 +208,15 @@
                         map: map,
                         icon: image
                     });
+                    var receiverId = data[i].id;
+                    var receiverUsername = data[i].userName;
 
                     contentString[i] = '<div class="card">' +
                         '<img class="rounded-circle index" src="data:image/*;base64, ' + data[i].profilePicture + '">' +
                         '<h2>' + data[i].ad + ' ' + data[i].soyad + '</h2>' +
                         '<p>Puan: ' + data[i].point + '</p>' +
                         '<p>Tanım: ' + data[i].profileDescription + '</p>' +
-                        '<p><button id="contactButton" onclick="openContactPage()">İletişim Kur</button></p>' +
+                        '<p><button id="contactButton" onclick="openContactPage(\'' + receiverId + ',' +receiverUsername+ '\')">İletişim Kur</button></p>' +
                         '</div>';
 
                     infowindow[i] = new google.maps.InfoWindow({
@@ -239,9 +241,12 @@
             });
         }
 
-        function openContactPage()
+        function openContactPage(receiver)
         {
-            var url = '@Url.Action("Message", "Home")';
+            console.log(receiverId, receiverUsername)
+            var receiverId = receiver.split(',')[0];
+            var receiverUsername = receiver.split(',')[1];
+            var url = '@Url.Action("Message", "Home")?receiverId=' + receiverId + '&receiverUsername=' + receiverUsername;
             window.location.href = url;
         }
     </script>
