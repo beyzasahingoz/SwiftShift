@@ -4,6 +4,7 @@ using Bitirme.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bitirme.Migrations
 {
     [DbContext(typeof(DbContextSwiftShift))]
-    partial class DbContextSwiftShiftModelSnapshot : ModelSnapshot
+    [Migration("20240106111747_mesaj")]
+    partial class mesaj
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,6 +218,10 @@ namespace Bitirme.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ReceiverUserID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -239,6 +246,8 @@ namespace Bitirme.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderUserID");
 
@@ -477,11 +486,19 @@ namespace Bitirme.Migrations
 
             modelBuilder.Entity("Bitirme.Models.Message", b =>
                 {
+                    b.HasOne("Bitirme.Areas.Identity.Data.ApplicationUser", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Bitirme.Areas.Identity.Data.ApplicationUser", "Sender")
                         .WithMany("Messages")
                         .HasForeignKey("SenderUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Receiver");
 
                     b.Navigation("Sender");
                 });

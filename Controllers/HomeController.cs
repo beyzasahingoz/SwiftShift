@@ -37,7 +37,10 @@ namespace Bitirme.Controllers
             {
                 ViewBag.CurrentUserName = currentUser.UserName;
             }
-            var messages = await _context.Messages.ToListAsync();
+            var list = new List<string>() { receiverUsername, currentUser.UserName };
+            var messages = await _context.Messages.Where(x => list.Contains(x.SenderUserName)).ToListAsync();
+            //var sql = string.Format("SELECT * FROM [Messages] WHERE SenderUserName IN('{0}', '{1}')", currentUser.UserName, receiverUsername);
+            //var messages = _context.Messages.FromSqlRaw(sql).ToListAsync();
             return View(messages); 
         }
 

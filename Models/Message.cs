@@ -20,7 +20,6 @@ namespace Bitirme.Models
         public virtual ApplicationUser Sender { get; set; }
 
         public string ReceiverUserID { get; set; }
-        public virtual ApplicationUser Receiver { get; set; }
 
         public Message()
         {
