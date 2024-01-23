@@ -22,13 +22,17 @@
             position: relative; /* Add this line */
         }
 
+            .product-card:hover {
+                background-color: honeydew;
+            }
+
         .product-image {
             position: absolute;
             top: 1;
             right: 0;
             max-width: 80px; /* Adjust the size as needed */
             max-height: 80px; /* Adjust the size as needed */
-            padding-right:10px;
+            padding-right: 10px;
         }
 
         .btn-get-contact {
@@ -64,7 +68,8 @@
                             </div>
                             <div class="form-group col-md-6"></div>
                             <div class="card-body">
-                                <img src="~/images/profilePicture.png" alt="Product Image" class="img-fluid product-image" />
+                                <img src="~/images/profilePicture.png" alt="Product Image" style="text-align:center; cursor:pointer" class="img-fluid product-image"
+                                 data-toggle="modal" data-target="#exampleModal" />
                                 <p class="card-text"><strong>Ürün İsmi:</strong> @explore.ProductName</p>
                                 <p class="card-text"><strong>Ülke:</strong> @explore.Country</p>
                                 <p class="card-text"><strong>Şehir:</strong> @explore.City</p>
@@ -81,5 +86,22 @@
             </div>
         </div>
     </header>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ürün Resmi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- You can customize the content of the modal here -->
+                    <img src="~/images/profilePicture.png" alt="Product Image" class="img-fluid" />
+                    <!-- Other details or additional information can be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
