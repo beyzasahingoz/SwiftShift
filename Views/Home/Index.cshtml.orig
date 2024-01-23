@@ -222,20 +222,74 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var map;
+<<<<<<< HEAD
         var markerArray = [];
         var $ = jQuery.noConflict();
 
+        function initMap()
+        {
+=======
         function initMap() {
+>>>>>>> 13fcfdd4cbe49e8d1664320bfd91181e8074e043
             map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: 41.013000, lng: 28.974800 },
                 zoom: 6
             });
 
+<<<<<<< HEAD
             $.get("@Url.Action("GetAllLocation", "Home")", function (data)
             {
                 for (var i = 0; i < data.length; i++)
                 {
                     createMarker(data[i]);
+=======
+            $.get("@Url.Action("GetAllLocation", "Home")", function(data) {
+                var marker = [];
+                var contentString = [];
+                var infowindow = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    var image = {
+                        url: 'data:image/*;base64, ' + data[i].profilePicture,
+                        size: new google.maps.Size(50, 50),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(25, 25),
+                        scaledSize: new google.maps.Size(50, 50)
+                    };
+
+                    marker[i] = new google.maps.Marker({
+                        position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
+                        map: map,
+                        icon: image
+                    });
+                    var receiverId = data[i].id;
+                    var receiverUsername = data[i].userName;
+
+                    contentString[i] = '<div class="card">' +
+                        '<img class="rounded-circle index" src="data:image/*;base64, ' + data[i].profilePicture + '">' +
+                        '<h2>' + data[i].ad + ' ' + data[i].soyad + '</h2>' +
+                        '<p>Puan: ' + data[i].point + '</p>' +
+                        '<p>Tanım: ' + data[i].profileDescription + '</p>' +
+                        '<p><button id="contactButton" onclick="openContactPage(\'' + receiverId + ',' + receiverUsername + '\')">İletişim Kur</button></p>' +
+                        '</div>';
+
+                    infowindow[i] = new google.maps.InfoWindow({
+                        content: contentString[i]
+                    });
+                    var markerValue = marker[i];
+                    google.maps.event.addListener(marker[i], 'mouseover', (function(markerValue, i) {
+                        return function() {
+                            infowindow[i].open(map, marker[i]);
+                        }
+                    })(marker[i], i));
+                    //google.maps.event.addListener(marker[i], 'mouseout', (function (markerValue, i)
+                    //{
+                    //    return function ()
+                    //    {
+                    //        infowindow[i].close();
+                    //    }
+                    //})(marker[i], i));
+>>>>>>> 13fcfdd4cbe49e8d1664320bfd91181e8074e043
                 }
 
                 var mc = new MarkerClusterer(map, markerArray, {
@@ -243,6 +297,7 @@
                 });
             });
             console.log(markerArray);
+            
         }
 
         function createMarker(data)
@@ -285,7 +340,13 @@
             markerArray.push(marker);
         }
 
+<<<<<<< HEAD
+        function openContactPage(receiver)
+        {
+=======
         function openContactPage(receiver) {
+            console.log(receiverId, receiverUsername)
+>>>>>>> 13fcfdd4cbe49e8d1664320bfd91181e8074e043
             var receiverId = receiver.split(',')[0];
             var receiverUsername = receiver.split(',')[1];
             var url = '@Url.Action("Message", "Home")?receiverId=' + receiverId + '&receiverUsername=' + receiverUsername;
@@ -293,11 +354,19 @@
         }
     </script>
     <script async defer
+<<<<<<< HEAD
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCY8T6t2s5mXZsmfTmbuoUULhZ1Rnn-wgA&callback=initMap"></script>
     <script src="https://cdn.jsdelivr.net/gh/googlemaps/v3-utility-library@07f15d84/markerclustererplus/src/markerclusterer.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
     <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+</div>
+=======
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCY8T6t2s5mXZsmfTmbuoUULhZ1Rnn-wgA&callback=initMap">
+    </script>
+</div>
+<div>
+    <header class="w3-display-container w3-wide">
         <div class="container">
             <div class="row">
                 @foreach (var explore in Model)
@@ -345,3 +414,4 @@
         </div>
     </div>
 </div>
+>>>>>>> 13fcfdd4cbe49e8d1664320bfd91181e8074e043
