@@ -22,5 +22,6 @@ namespace Bitirme.Models
         public int CityId { get; set; }
 
         public int CountryId { get; set; }
+        public byte[]? ProductImage { get; set; }
     }
 }

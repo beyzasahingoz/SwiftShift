@@ -76,7 +76,8 @@ namespace Bitirme.Controllers
                     ProductKg = model.ProductKg,
                     ProductNote = model.ProductNote,
                     CityId = model.CityId,
-                    CountryId = model.CountryId
+                    CountryId = model.CountryId,
+                    ProductImage = model.ProductImage
                 };
 
                 _context.tbl_products.Add(product);
