@@ -1,10 +1,4 @@
-﻿@using Bitirme.Views.Main
-@using Microsoft.AspNetCore.Identity
-@using Bitirme.Areas.Identity.Data
-@model IEnumerable<Bitirme.Models.Explore>
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -17,14 +11,24 @@
     <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
     <style>
         .product-card {
-            background-color: #fff; /* Kart arkaplan rengi */
-            border: 1px solid #ddd; /* Kart kenarlık rengi ve kalınlığı */
-            border-radius: 8px; /* Kart köşe yuvarlaklığı */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Kart gölgesi */
-            overflow: hidden; /* İçerik dışına taşan kısımları gizle */
-            margin: 20px; /* Kart arasındaki boşluk */
-            max-width: 400px; /* Kartın maksimum genişliği */
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px;
+            max-width: 400px;
             min-height: 340px;
+            position: relative; /* Add this line */
+        }
+
+        .product-image {
+            position: absolute;
+            top: 1;
+            right: 0;
+            max-width: 80px; /* Adjust the size as needed */
+            max-height: 80px; /* Adjust the size as needed */
+            padding-right:10px;
         }
 
         .btn-get-contact {
@@ -41,6 +45,10 @@
             background-color: whitesmoke;
             padding: 10px;
         }
+
+        .card-body {
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
@@ -54,9 +62,9 @@
                             <div class="card-header">
                                 <h5 class="card-title">İlan Detayları</h5>
                             </div>
-                            <div class="form-group col-md-6">
-                            </div>
+                            <div class="form-group col-md-6"></div>
                             <div class="card-body">
+                                <img src="~/images/profilePicture.png" alt="Product Image" class="img-fluid product-image" />
                                 <p class="card-text"><strong>Ürün İsmi:</strong> @explore.ProductName</p>
                                 <p class="card-text"><strong>Ülke:</strong> @explore.Country</p>
                                 <p class="card-text"><strong>Şehir:</strong> @explore.City</p>

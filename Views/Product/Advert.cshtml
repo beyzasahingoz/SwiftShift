@@ -20,25 +20,29 @@
         }
 
         section {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .product-form {
-            width: 550px;
-            height: 350px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: auto;
-            position: absolute;
             top: 0;
             bottom: 0;
             left: 0;
             right: 0;
+            margin-top: 20px;
             text-align: center;
         }
+
+        /* .product-form {
+                    width: 550px;
+                    height: 350px;
+                    background-color: #fff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    margin: auto;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    text-align: center;
+        }*/
 
         h2 {
             text-align: center;
@@ -66,6 +70,20 @@
             border-radius: 4px;
             text-align: center;
         }
+
+        .productImg {
+            padding: 2px;
+            margin: 6px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            margin-left: 50px;
+            cursor: pointer;
+        }
+
+            .productImg:hover {
+                background-color: cadetblue;
+            }
 
         .country,
         .city,
@@ -102,14 +120,18 @@
                 background-color: #45a049;
             }
     </style>
+    <script>
+        function showFileInput() {
+            document.getElementById('fileInput').click();
+        }
+    </script>
 </head>
-
 <body>
     <h1>İlan Ekle</h1>
     <section>
         @using (Html.BeginForm("Advert", "Product"))
         {
-            <form id="productForm" class="product-form">
+            <form id="productForm" class="product-form" enctype="multipart/form-data">
                 <div class="form-row">
                     <div class="col-md-3">
                         <label>Ürün İsmi:</label>
@@ -136,6 +158,16 @@
                         </select>
                         <label>Ürün Notu:</label>
                         <input class="product-note" type="text" name="productNote" /> <br>
+                    </div>
+                    <div>
+                        <label>Ürün Resmi:</label>
+                        <div class="productImg" onclick="showFileInput()">
+                            <img id="productImage" style="width:200px;height:200px; object-fit:cover" src="~/images/profilePicture.png">
+                        </div>
+                    </div>
+                    <div>
+                        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif" id="fileInput" style="display: none;"
+                           onchange="document.getElementById('productImage').src = window.URL.createObjectURL(this.files[0])" class="product-image" name="productImage" />
                     </div>
                 </div>
                 <div class="product-add-container">

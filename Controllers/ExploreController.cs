@@ -30,7 +30,8 @@ namespace Bitirme.Controllers
                     City = city,
                     Address = product.Address,
                     ProductKg = product.ProductKg,
-                    Note = product.ProductNote
+                    Note = product.ProductNote,
+                    ProductImage = product.ProductImage
                 });
             }
 
@@ -50,6 +51,5 @@ namespace Bitirme.Controllers
                  .OrderBy(n => n.CityName)
                  .Select(c => c.CityName).ToList()[0];
         }
-
     }
 }

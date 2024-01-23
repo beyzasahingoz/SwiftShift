@@ -14,6 +14,6 @@ namespace Bitirme.Models
         public string Address { get; set; }
         public string ProductKg { get; set; }
         public string Note { get; set; }
-
+        public byte[]? ProductImage { get; set; }
     }
 }
