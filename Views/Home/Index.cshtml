@@ -178,72 +178,76 @@
 
 <div class="row">
     <div id="map"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var map;
+        var markerArray = [];
+        var $ = jQuery.noConflict();
+
         function initMap()
         {
             map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: 41.013000, lng: 28.974800 },
-                zoom: 8
+                zoom: 6
             });
 
             $.get("@Url.Action("GetAllLocation", "Home")", function (data)
             {
-                var marker = [];
-                var contentString = [];
-                var infowindow = [];
-
                 for (var i = 0; i < data.length; i++)
                 {
-                    var image = {
-                        url: 'data:image/*;base64, ' + data[i].profilePicture,
-                        size: new google.maps.Size(50, 50),
-                        origin: new google.maps.Point(0, 0),
-                        anchor: new google.maps.Point(25, 25),
-                        scaledSize: new google.maps.Size(50, 50)
-                    };
-
-                    marker[i] = new google.maps.Marker({
-                        position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
-                        map: map,
-                        icon: image
-                    });
-                    var receiverId = data[i].id;
-                    var receiverUsername = data[i].userName;
-
-                    contentString[i] = '<div class="card">' +
-                        '<img class="rounded-circle index" src="data:image/*;base64, ' + data[i].profilePicture + '">' +
-                        '<h2>' + data[i].ad + ' ' + data[i].soyad + '</h2>' +
-                        '<p>Puan: ' + data[i].point + '</p>' +
-                        '<p>Tanım: ' + data[i].profileDescription + '</p>' +
-                        '<p><button id="contactButton" onclick="openContactPage(\'' + receiverId + ',' +receiverUsername+ '\')">İletişim Kur</button></p>' +
-                        '</div>';
-
-                    infowindow[i] = new google.maps.InfoWindow({
-                        content: contentString[i]
-                    });
-                    var markerValue = marker[i];
-                    google.maps.event.addListener(marker[i], 'mouseover', (function (markerValue, i)
-                    {
-                        return function ()
-                        {
-                            infowindow[i].open(map, marker[i]);
-                        }
-                    })(marker[i], i));
-                    //google.maps.event.addListener(marker[i], 'mouseout', (function (markerValue, i)
-                    //{
-                    //    return function ()
-                    //    {
-                    //        infowindow[i].close();
-                    //    }
-                    //})(marker[i], i));
+                    createMarker(data[i]);
                 }
+
+                var mc = new MarkerClusterer(map, markerArray, {
+                    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+                });
             });
+            console.log(markerArray);
+            
+        }
+
+        function createMarker(data)
+        {
+            var image = {
+                url: 'data:image/*;base64, ' + data.profilePicture,
+                size: new google.maps.Size(50, 50),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(25, 25),
+                scaledSize: new google.maps.Size(50, 50)
+            };
+
+            var marker = new google.maps.Marker({
+                position: { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) },
+                map: map,
+                icon: image
+                // zIndex: Math.round(parseFloat(data.latitude) * -100000) << 5
+            });
+
+            var receiverId = data.id;
+            var receiverUsername = data.userName;
+
+            var contentString = '<div class="card">' +
+                '<img class="rounded-circle index" src="data:image/*;base64, ' + data.profilePicture + '">' +
+                '<h2>' + data.ad + ' ' + data.soyad + '</h2>' +
+                '<p>Puan: ' + data.point + '</p>' +
+                '<p>Tanım: ' + data.profileDescription + '</p>' +
+                '<p><button onclick="openContactPage(\'' + receiverId + ',' + receiverUsername + '\')">İletişim Kur</button></p>' +
+                '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            google.maps.event.addListener(marker, 'mouseover', function ()
+            {
+                infowindow.open(map, marker);
+            });
+
+            markerArray.push(marker);
         }
 
         function openContactPage(receiver)
         {
-            console.log(receiverId, receiverUsername)
             var receiverId = receiver.split(',')[0];
             var receiverUsername = receiver.split(',')[1];
             var url = '@Url.Action("Message", "Home")?receiverId=' + receiverId + '&receiverUsername=' + receiverUsername;
@@ -251,6 +255,9 @@
         }
     </script>
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCY8T6t2s5mXZsmfTmbuoUULhZ1Rnn-wgA&callback=initMap">
-    </script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCY8T6t2s5mXZsmfTmbuoUULhZ1Rnn-wgA&callback=initMap"></script>
+    <script src="https://cdn.jsdelivr.net/gh/googlemaps/v3-utility-library@07f15d84/markerclustererplus/src/markerclusterer.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 </div>

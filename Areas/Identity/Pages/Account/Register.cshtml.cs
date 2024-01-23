@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Microsoft.CodeAnalysis;
 using Image = System.Drawing.Image;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Bitirme.Areas.Identity.Pages.Account
 {
@@ -118,7 +121,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Şifre")]
             public string Password { get; set; }
 
             /// <summary>
@@ -126,7 +129,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "Şifre Doğrulama")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
         }
@@ -261,10 +264,10 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
         private string getCountry(int countryId)
         {
-           return _context.Countries
-                .Where(c => c.Id == countryId)
-                .OrderBy(n => n.CountryName)
-                .Select(c => c.CountryName).ToList()[0];
+            return _context.Countries
+                 .Where(c => c.Id == countryId)
+                 .OrderBy(n => n.CountryName)
+                 .Select(c => c.CountryName).ToList()[0];
         }
         private string getCity(int cityId)
         {
@@ -326,7 +329,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
             return lstDistrict;
         }
-        public static async Task<Coordinates> GetCoordinates(string country, string city, string district)
+        private async Task<Coordinates> GetCoordinates(string country, string city, string district)
         {
             using (var httpClient = new HttpClient())
             {
@@ -346,8 +349,31 @@ namespace Bitirme.Areas.Identity.Pages.Account
                             lat = Convert.ToString(item.geometry.location.lat);
                             longi = Convert.ToString(item.geometry.location.lng);
                         }
-                        return new Coordinates { Latitude = lat, Longitude = longi };
+                        var isExist = await _context.AspNetUsers
+                            .AnyAsync(x => x.Latitude.Equals(lat) && x.Longitude.Equals(longi));
 
+                        if (!isExist)
+                        {
+                            return new Coordinates { Latitude = lat, Longitude = longi };
+                        }
+                        else
+                        {
+                            while (isExist)
+                            {
+                                Coordinates coordinates = await ReCalculateLatLng(lat, longi);
+                                lat = coordinates.Latitude;
+                                longi = coordinates.Longitude;
+
+                                isExist = await _context.AspNetUsers
+                                    .AnyAsync(x => x.Latitude.Equals(lat) && x.Longitude.Equals(longi));
+
+                                if (!isExist)
+                                {
+                                    return new Coordinates { Latitude = lat, Longitude = longi };
+                                }
+                            }
+
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -357,6 +383,23 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
                 return null;
             }
+        }
+
+        private async Task<Coordinates> ReCalculateLatLng(string lat, string lng)
+        {
+            var R = 6378137.0;
+            Random rand = new();
+
+            var DistanceNorth = rand.Next(3, 5);
+            var DistanceEast = rand.Next(3, 5);
+
+            var dLat = DistanceNorth / R;
+            var dLon = DistanceEast / (R * Math.Cos(Math.PI * Convert.ToDouble(lat) / 180));
+
+            var NewLat = Convert.ToDouble(lat) + dLat * 180 / Math.PI;
+            var NewLng = Convert.ToDouble(lng) + dLon * 180 / Math.PI;
+
+            return new Coordinates { Latitude = NewLat.ToString(), Longitude = NewLng.ToString() };
         }
     }
 
