@@ -228,7 +228,7 @@
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: 41.013000, lng: 28.974800 },
-                zoom: 6
+                zoom: 8
             });
 
             $.get("@Url.Action("GetAllLocation", "Home")", function (data)
@@ -239,7 +239,8 @@
                 }
 
                 var mc = new MarkerClusterer(map, markerArray, {
-                    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+                    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                    gridSize: 2
                 });
             });
             console.log(markerArray);
@@ -256,7 +257,7 @@
             };
 
             var marker = new google.maps.Marker({
-                position: { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) },
+                position: { lat: Number(data.latitude), lng: Number(data.longitude) },
                 map: map,
                 icon: image
                 // zIndex: Math.round(parseFloat(data.latitude) * -100000) << 5
@@ -277,12 +278,12 @@
                 content: contentString
             });
 
+            markerArray.push(marker);
+
             google.maps.event.addListener(marker, 'mouseover', function ()
             {
                 infowindow.open(map, marker);
             });
-
-            markerArray.push(marker);
         }
 
         function openContactPage(receiver) {
