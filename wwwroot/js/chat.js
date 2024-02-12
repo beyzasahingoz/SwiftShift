@@ -1,15 +1,19 @@
 ﻿class Message
 {
-    constructor(username, text, when)
+    constructor(senderUsername, receiverUsername, receiverUserId, text, when)
     {
-        this.userName = username;
+        this.senderUserName = senderUsername;
+        this.receiverUserName = receiverUsername;
+        this.receiverUserID = receiverUserId;
         this.text = text;
         this.when = when;
     }
 }
 
-// userName is declared in razor page.
-const username = userName;
+// senderUserName is declared in razor page.
+const senderUsername = senderUserName;
+const receiverUsername = receiverUserName;
+const receiverUserId = receiverUserID;
 const textInput = document.getElementById('messageText');
 const whenInput = document.getElementById('when');
 const chat = document.getElementById('chat');
@@ -37,20 +41,20 @@ function sendMessage()
     if (text.trim() === "") return;
 
     let when = new Date();
-    let message = new Message(username, text);
+    let message = new Message(senderUsername, receiverUsername, receiverUserId, text);
     sendMessageToHub(message);
 }
 
 function addMessageToChat(message)
 {
-    let isCurrentUserMessage = message.userName === username;
+    let isCurrentUserMessage = message.senderUserName === senderUsername;
 
     let container = document.createElement('div');
     container.className = isCurrentUserMessage ? "container darker" : "container";
 
     let sender = document.createElement('p');
     sender.className = "sender";
-    sender.innerHTML = message.userName;
+    sender.innerHTML = message.senderUserName;
     let text = document.createElement('p');
     text.innerHTML = message.text;
 

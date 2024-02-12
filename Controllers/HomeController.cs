@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
+using NuGet.Protocol.Plugins;
 
 namespace Bitirme.Controllers
 {
@@ -18,6 +20,7 @@ namespace Bitirme.Controllers
         private readonly DbContextSwiftShift _context;
 
         private readonly UserManager<ApplicationUser> _userManager;
+
         public HomeController(ILogger<HomeController> logger, DbContextSwiftShift context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
@@ -60,31 +63,39 @@ namespace Bitirme.Controllers
                  .OrderBy(n => n.CityName)
                  .Select(c => c.CityName).ToList()[0];
         }
-        public async Task<IActionResult> Message(string receiverId,string receiverUsername)
+        public IActionResult Message(string receiverId,string receiverUsername)
         {
-            var currentUser = await _userManager.GetUserAsync(User);
+            var currentUser = _userManager.GetUserName(User);  
             if (User.Identity.IsAuthenticated)
             {
-                ViewBag.CurrentUserName = currentUser.UserName;
+                ViewBag.CurrentUserName = currentUser;
+                ViewBag.ReceiverUserName = receiverUsername;
+                ViewBag.ReceiverUserID = receiverId;
             }
-            var list = new List<string>() { receiverUsername, currentUser.UserName };
-            var messages = await _context.Messages.Where(x => list.Contains(x.SenderUserName)).ToListAsync();
-            //var sql = string.Format("SELECT * FROM [Messages] WHERE SenderUserName IN('{0}', '{1}')", currentUser.UserName, receiverUsername);
-            //var messages = _context.Messages.FromSqlRaw(sql).ToListAsync();
+            var messages = _context.Messages.FromSqlRaw("select * from messages where (SenderUserName = {0} and ReceiverUserName = {1}) " +
+                "or (SenderUserName = {1} and ReceiverUserName = {0})", currentUser, receiverUsername).ToList();
             return View(messages); 
         }
 
-        public async Task<IActionResult> Create(Message message)
+        public async Task<IActionResult> Create(Models.Message message)
         {
             if (ModelState.IsValid)
             {
                 message.SenderUserName = User.Identity.Name;
                 var sender = await _userManager.GetUserAsync(User);
                 message.SenderUserID = sender.Id;
+
                 await _context.Messages.AddAsync(message);
                 await _context.SaveChangesAsync();
-                var messages = await _context.Messages.ToListAsync();
-                return View("Message",messages);
+
+                TempData["receiverId"] = message.ReceiverUserID;
+                TempData["receiverUsername"] = message.ReceiverUserName;
+
+                return RedirectToAction("Message", new
+                {
+                    receiverId = message.ReceiverUserID,
+                    receiverUsername = message.ReceiverUserName
+                });
             }
             return Error();
         }

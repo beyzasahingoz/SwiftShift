@@ -1,7 +1,9 @@
 ﻿@model IEnumerable<Bitirme.Models.Message>
 @{
     ViewData["Title"] = "Home Page";
-    var userName = User.Identity.Name;
+    var senderUserName = User.Identity.Name;
+    var receiverUserName = ViewBag.ReceiverUserName;
+    var receiverUserID = ViewBag.ReceiverUserID;
 }
 
 <div class="jumbotron bg-light">
@@ -16,7 +18,7 @@
                 @foreach (var message in Model.OrderBy(m => m.When))
                 {
                     string containerClass, timePosition, textAlign, contcolor, offset;
-                    if (userName == message.SenderUserName)
+                    if (senderUserName == message.SenderUserName)
                     {
                         containerClass = "container darker";
                         timePosition = "time-right text-light";
@@ -40,6 +42,9 @@
                                 <p class="sender @textAlign">@message.SenderUserName</p>
                                 <p class="@textAlign">@message.Text</p>
                                 <span class="@timePosition">@message.When.ToString("M/dd/yyyy hh:MM tt")</span>
+                                <p style="display:none" class="receiver @textAlign">@message.ReceiverUserName</p>
+                                <p style="display:none" class="receiverid @textAlign">@message.ReceiverUserID</p>
+
                             </div>
                         </div>
                     </div>
@@ -58,7 +63,9 @@
                 <div class="form-group">
                     <input type="submit" value="Send" id="submitButton" class="btn btn-outline-primary btn-block" />
                 </div>
-                <input type="hidden" value="@userName" name="username" />
+                <input type="hidden" value="@senderUserName" name="senderUsername" />
+                <input type="hidden" value="@receiverUserName" name="receiverUsername" />
+                <input type="hidden" value="@receiverUserID" name="receiverUserId" />
             </form>
         </div>
     </div>
@@ -67,7 +74,11 @@
 @if (User.Identity.IsAuthenticated)
 {
     <script>
-        const userName = "@ViewBag.CurrentUserName";
+        const senderUserName = "@ViewBag.CurrentUserName";
+        const receiverUserName = "@ViewBag.ReceiverUserName";
+        const senderUserName = "@ViewBag.CurrentUserName";
+        const ReceiverUserID = "@ViewBag.ReceiverUserID";
+        console.log(receiverUserName, senderUserName, ReceiverUserID);
     </script>
 }
 
