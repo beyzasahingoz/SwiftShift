@@ -20,6 +20,10 @@ using Image = System.Drawing.Image;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Runtime.InteropServices;
+using MimeKit;
+using System.Net.Mail;
+using MailKit.Net.Smtp;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace Bitirme.Areas.Identity.Pages.Account
 {
@@ -32,9 +36,11 @@ namespace Bitirme.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly DbContextSwiftShift _context;
-        public List<SelectListItem> Countries { get; }
-        public List<SelectListItem> Cities { get; }
-        public List<SelectListItem> District { get; }
+
+        public CascadingModel CascadingModel { get; set; }
+
+        public List<SelectListItem> Countries { get; set; }
+
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -52,9 +58,8 @@ namespace Bitirme.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
-            Countries = GetCountries();
-            Cities = GetCities();
-            District = GetDistrict();
+            CascadingModel = new CascadingModel();
+            CascadingModel.Countries = GetCountries();
         }
 
         /// <summary>
@@ -108,6 +113,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Ülke")]
+
             public int CountryId { get; set; }
 
             [Required]
@@ -132,6 +138,10 @@ namespace Bitirme.Areas.Identity.Pages.Account
             [Display(Name = "Şifre Doğrulama")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Cinsiyet")]
+            public string Gender { get; set; }
         }
 
 
@@ -147,6 +157,9 @@ namespace Bitirme.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                Random random = new Random();
+                int code;
+                code = random.Next(100000, 1000000);
                 var user = CreateUser();
 
                 string country = getCountry(Input.CountryId);
@@ -165,6 +178,14 @@ namespace Bitirme.Areas.Identity.Pages.Account
                 user.Longitude = coordinates.Longitude;
                 user.Point = 0;
                 user.ProfileDescription = "";
+                user.ConfirmCode = code;
+                user.UserIBAN = "";
+                user.TCKN = "";
+                user.Gender = Input.Gender;
+                user.RegisterDate = DateTime.Now;
+                user.DeliverNumber = "0";
+                user.AdvertNumber = "0";
+                user.TransportNumber = "0";
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -172,29 +193,51 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    MimeMessage mimeMessage = new MimeMessage();
+                    MailboxAddress mailboxAddressFrom = new MailboxAddress("SwiftShift Admin", "swiftshiftturkey@gmail.com");
+                    MailboxAddress mailboxAddressTo = new MailboxAddress("User", user.Email);
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    mimeMessage.From.Add(mailboxAddressFrom);
+                    mimeMessage.To.Add(mailboxAddressTo);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var bodyBuilder = new BodyBuilder();
+                    bodyBuilder.TextBody = "Kayıt İşlemini Gerçekleştirmek İçin Onay Kodunuz: " + code;
+                    mimeMessage.Body = bodyBuilder.ToMessageBody();
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    mimeMessage.Subject = "SwiftShift Onay Kodu";
+
+                    SmtpClient smtpClient = new SmtpClient();
+                    smtpClient.Connect("smtp.gmail.com", 587, false);
+                    smtpClient.Authenticate("swiftshiftturkey@gmail.com", "hftdjssmjyylkabx");
+                    smtpClient.Send(mimeMessage);
+                    smtpClient.Disconnect(true);
+
+                    TempData["Mail"] = user.NormalizedEmail;
+                    return RedirectToAction("Index", "ConfirmMail");
+
+                    //_logger.LogInformation("User created a new account with password.");
+
+                    //var userId = await _userManager.GetUserIdAsync(user);
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    //var callbackUrl = Url.Page(
+                    //    "/Account/ConfirmEmail",
+                    //    pageHandler: null,
+                    //    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    //    protocol: Request.Scheme);
+
+                    //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    //{
+                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    //}
+                    //else
+                    //{
+                    //    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //    return LocalRedirect(returnUrl);
+                    //}
                 }
                 foreach (var error in result.Errors)
                 {
@@ -231,7 +274,16 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
         private byte[] ImageToByteArr()
         {
-            Image image = Image.FromFile("wwwroot\\images\\profilePicture.png");
+            Image image;
+            if (Input.Gender == "Kadın")
+            {
+                image = Image.FromFile("wwwroot\\images\\kadin.png");
+            }
+            else
+            {
+                image = Image.FromFile("wwwroot\\images\\erkek.png");
+            }
+
             using (var ms = new MemoryStream())
             {
                 image.Save(ms, image.RawFormat);
@@ -241,25 +293,14 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
         private List<SelectListItem> GetCountries()
         {
-            var lstCountries = new List<SelectListItem>();
+            Countries = (from country in _context.Countries
+                         select new SelectListItem
+                         {
+                             Value = country.Id.ToString(),
+                             Text = country.CountryName
+                         }).ToList();
 
-            List<Country> Countries = _context.Countries.ToList();
-
-            lstCountries = Countries.Select(ct => new SelectListItem()
-            {
-                Value = ct.Id.ToString(),
-                Text = ct.CountryName
-            }).ToList();
-
-            var defItem = new SelectListItem()
-            {
-                Value = "",
-                Text = "----Select Country----"
-            };
-
-            lstCountries.Insert(0, defItem);
-
-            return lstCountries;
+            return Countries;
         }
 
         private string getCountry(int countryId)
@@ -284,50 +325,48 @@ namespace Bitirme.Areas.Identity.Pages.Account
                  .Select(c => c.DistrictName).ToList()[0];
         }
 
-        private List<SelectListItem> GetCities(int countryId = 1)
+        public IActionResult OnPostAjaxMethod(string type, int value)
         {
-            List<SelectListItem> lstCities = _context.Cities
-                .Where(c => c.CountryId == countryId)
-                .OrderBy(n => n.CityName)
-                .Select(n =>
-                new SelectListItem
-                {
-                    Value = n.Id.ToString(),
-                    Text = n.CityName
-                }).ToList();
-
-            var defItem = new SelectListItem()
+            CascadingModel = new CascadingModel();
+            switch (type)
             {
-                Value = "",
-                Text = "----Select City----"
-            };
-
-            lstCities.Insert(0, defItem);
-
-            return lstCities;
+                case "ddlCountries":
+                    CascadingModel.Cities = (from city in _context.Cities
+                                             where city.CountryId == value
+                                             select new SelectListItem
+                                             {
+                                                 Value = city.Id.ToString(),
+                                                 Text = city.CityName
+                                             }).ToList();
+                    break;
+                case "ddlCities":
+                    CascadingModel.District = (from district in _context.District
+                                               where district.CityId == value
+                                               select new SelectListItem
+                                               {
+                                                   Value = district.Id.ToString(),
+                                                   Text = district.DistrictName
+                                               }).ToList();
+                    break;
+            }
+            return new JsonResult(CascadingModel);
         }
 
-        private List<SelectListItem> GetDistrict(int cityId = 1)
+        private async Task<Coordinates> ReCalculateLatLng(string lat, string lng)
         {
-            List<SelectListItem> lstDistrict = _context.District
-                .Where(c => c.CityId == cityId)
-                .OrderBy(n => n.DistrictName)
-                .Select(n =>
-                new SelectListItem
-                {
-                    Value = n.Id.ToString(),
-                    Text = n.DistrictName
-                }).ToList();
+            var R = 6378137.0;
+            Random rand = new();
 
-            var defItem = new SelectListItem()
-            {
-                Value = "",
-                Text = "----Select District----"
-            };
+            var DistanceNorth = rand.Next(3, 5);
+            var DistanceEast = rand.Next(3, 5);
 
-            lstDistrict.Insert(0, defItem);
+            var dLat = DistanceNorth / R;
+            var dLon = DistanceEast / (R * Math.Cos(Math.PI * Convert.ToDouble(lat) / 180));
 
-            return lstDistrict;
+            var NewLat = Convert.ToDouble(lat) + dLat * 180 / Math.PI;
+            var NewLng = Convert.ToDouble(lng) + dLon * 180 / Math.PI;
+
+            return new Coordinates { Latitude = (NewLat.ToString()).Replace(',', '.'), Longitude = (NewLng.ToString()).Replace(',', '.') };
         }
         private async Task<Coordinates> GetCoordinates(string country, string city, string district)
         {
@@ -346,8 +385,8 @@ namespace Bitirme.Areas.Identity.Pages.Account
                         string lat = "", longi = "";
                         foreach (var item in data.results)
                         {
-                            lat = Convert.ToString(item.geometry.location.lat);
-                            longi = Convert.ToString(item.geometry.location.lng);
+                            lat = (Convert.ToString(item.geometry.location.lat)).Replace(',', '.');
+                            longi = (Convert.ToString(item.geometry.location.lng)).Replace(',', '.');
                         }
                         var isExist = await _context.AspNetUsers
                             .AnyAsync(x => x.Latitude.Equals(lat) && x.Longitude.Equals(longi));
@@ -360,7 +399,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
                         {
                             while (isExist)
                             {
-                                Coordinates coordinates = await ReCalculateLatLng(lat, longi);
+                                Coordinates coordinates = await ReCalculateLatLng(lat.Replace('.', ','), longi.Replace('.', ','));
                                 lat = coordinates.Latitude;
                                 longi = coordinates.Longitude;
 
@@ -383,23 +422,6 @@ namespace Bitirme.Areas.Identity.Pages.Account
 
                 return null;
             }
-        }
-
-        private async Task<Coordinates> ReCalculateLatLng(string lat, string lng)
-        {
-            var R = 6378137.0;
-            Random rand = new();
-
-            var DistanceNorth = rand.Next(3, 5);
-            var DistanceEast = rand.Next(3, 5);
-
-            var dLat = DistanceNorth / R;
-            var dLon = DistanceEast / (R * Math.Cos(Math.PI * Convert.ToDouble(lat) / 180));
-
-            var NewLat = Convert.ToDouble(lat) + dLat * 180 / Math.PI;
-            var NewLng = Convert.ToDouble(lng) + dLon * 180 / Math.PI;
-
-            return new Coordinates { Latitude = NewLat.ToString(), Longitude = NewLng.ToString() };
         }
     }
 

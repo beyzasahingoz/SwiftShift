@@ -102,7 +102,7 @@ namespace Bitirme.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = "/Home/Index")
         {
             returnUrl ??= Url.Content("~/");
 

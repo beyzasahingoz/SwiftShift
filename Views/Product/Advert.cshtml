@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Bitirme.Models.Product>
+﻿@model Product
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,114 +6,83 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @{
+        ViewData["Title"] = "AddProduct";
+    }
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-8HUsf4PLvM2dXu4Zg2K2KDEDODSYNIVg7cbvFb8ZD1hW0VOrKu4tpPzX8Bm9JU4Se+PeyUemAo5usI2VZrMpxg==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
         }
 
-        h1 {
+        h1, h2 {
             text-align: center;
             color: #333;
         }
 
-        section {
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        /* .product-form {
-                            width: 550px;
-                            height: 350px;
-                            background-color: #fff;
-                            padding: 20px;
-                            border-radius: 8px;
-                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                            margin: auto;
-                            position: absolute;
-                            top: 0;
-                            bottom: 0;
-                            left: 0;
-                            right: 0;
-                            text-align: center;
-                }*/
-
-        h2 {
-            text-align: center;
-            color: #333;
+        .card {
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 1000px;
         }
 
         label {
             display: block;
-            margin: 10px 0;
+            margin-bottom: 5px;
             color: #555;
+            font-weight: bold;
         }
 
-        .address,
-        .product-name,
-        .product-add,
-        .country,
-        .city,
-        .product-note,
-        .product-kg {
-            width: 250px;
-            padding: 2px;
+        select,
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
             margin: 6px 0;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
-            text-align: center;
         }
 
-        .productImg {
-            padding: 2px;
-            margin: 6px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: center;
-            margin-left: 50px;
-            cursor: pointer;
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
         }
 
-            .productImg:hover {
-                background-color: cadetblue;
+        .form-group {
+            width: 30%;
+            margin-bottom: 15px;
+        }
+
+            .form-group.full-width {
+                width: 100%;
             }
 
-        .country,
-        .city,
-        .product-kg {
-            cursor: pointer;
-        }
-
-        .product-note {
-            resize: vertical;
-            padding: 2px;
-        }
-
         .product-add-container {
+            text-align: center;
             margin-top: 20px;
-            text-align: center;
-        }
-
-
-        input {
-            text-align: center;
         }
 
         .product-add {
-            text-align: center;
             background-color: #4caf50;
             color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
             .product-add:hover {
@@ -121,64 +90,247 @@
             }
     </style>
     <script>
-        function showFileInput() {
+        function showFileInput()
+        {
             document.getElementById('fileInput').click();
         }
     </script>
 </head>
 <body>
-    <h1>İlan Ekle</h1>
-    <section>
-        @using (Html.BeginForm("Advert", "Product"))
-        {
-            <form id="productForm" class="product-form" enctype="multipart/form-data">
-                <div class="form-row">
-                    <div class="col-md-3">
-                        <label>Ürün İsmi:</label>
-                        <input class="product-name" type="text" name="productName" /> <br>
-                        <label>Ülke:</label>
-                        <select class="country" name="countryId">
-                            @foreach (var country in ViewBag.Countries)
-                            {
-                                <option value="@country.Value">@country.Text</option>
-                            }
-                        </select>
-                        <label>Adres:</label>
-                        <input class="address" type="text" name="address" /> <br>
+    <div class="card">
+        <form id="productForm" class="row g-3 product-form needs-validation" enctype="multipart/form-data" novalidate action="@Url.Action("Advert", "Product")" method="post">
+            @Html.AntiForgeryToken()
+            <div class="col-sm-12 offset-sm-4">
+                <div>
+                    <label asp-for="ProductImage">Ürün Resmi:</label>
+                    <div class="productImg" onclick="showFileInput()">
+                        <img id="ProductImage" style="width:200px;height:200px; object-fit:cover" src="~/images/profilePicture.png">
                     </div>
-                    <div>
-                        <label>Ürün Ağırlığı (kg):</label>
-                        <input class="product-kg" type="text" name="productKg" /> <br>
-                        <label>Şehir:</label>
-                        <select class="city" name="cityId">
-                            @foreach (var city in ViewBag.Cities)
-                            {
-                                <option value="@city.Value">@city.Text</option>
-                            }
-                        </select>
-                        <label>Ürün Notu:</label>
-                        <input class="product-note" type="text" name="productNote" /> <br>
-                    </div>
-                    <div>
-                        <label>Ürün Resmi:</label>
-                        <div class="productImg" onclick="showFileInput()">
-                            <img id="productImage" style="width:200px;height:200px; object-fit:cover" src="~/images/profilePicture.png">
-                        </div>
-                    </div>
-                    <div>
-                        <input type="file"
+                </div>
+                <div>
+                    <input type="file"
                            accept=".png,.jpg,.jpeg,.gif,.tif"
                            id="fileInput"
                            style="display: none;"
-                           onchange="document.getElementById('productImage').src = window.URL.createObjectURL(this.files[0])"
-                           class="product-image" name="productImage" />
-                    </div>
+                           asp-for="ProductImage"
+                           onchange="document.getElementById('ProductImage').src = window.URL.createObjectURL(this.files[0])"
+                           class="product-image" name="ProductImage" />
+                    <span asp-validation-for="ProductImage" class="text-danger"></span>
                 </div>
-                <div class="product-add-container">
-                    <input class="product-add" type="submit" value="Ekle" />
+            </div>
+            <div class="col-md-4">
+                <label>Ürün İsmi:</label>
+                <input class="product-name" type="text" name="productName" required />
+                <div class="invalid-feedback">
+                    Lütfen Ürün İsmi Giriniz
                 </div>
-            </form>
+            </div>
+            <div class="col-md-4">
+                <label>Adres:</label>
+                <input class="address" type="text" name="address" required />
+                <div class="invalid-feedback">
+                    Lütfen Adres Giriniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label>Ürün Ağırlığı (kg):</label>
+                <input class="product-kg" type="number" name="productKg" required />
+                <div class="invalid-feedback">
+                    Lütfen Ürün Ağırlığı Giriniz
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Ürünün Gidiş Tarihi:</label>
+                <input id="WhenDate" class="datepicker when-date" type="text" name="WhenDate" required />
+                <div class="invalid-feedback">
+                    Lütfen Tarih Seçiniz
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Ürün Notu:</label>
+                <input class="product-note" type="text" name="productNote" />
+            </div>
+            <div class="col-md-4">
+                <label for="ddlFromCountries">Ürünün Bulunduğu Ülke:</label>
+                <select id="ddlFromCountries" class="form-control" asp-for="FromCountryId" asp-items="ViewBag.FromCountries" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="FromCountryId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Ülke Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlFromCities">Ürünün Bulunduğu Şehir:</label>
+                <select id="ddlFromCities" class="form-control" asp-for="FromCityId" asp-items="ViewBag.FromCities" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="FromCityId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Şehir Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlFromDistrict">Ürünün Bulunduğu İlçe:</label>
+                <select id="ddlFromDistrict" class="form-control" asp-for="FromDistrictId" asp-items="ViewBag.FromDistrict" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="FromDistrictId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen İlçe Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlToCountries">Ürünün Gideceği Ülke:</label>
+                <select id="ddlToCountries" class="form-control" asp-for="ToCountryId" asp-items="ViewBag.ToCountries" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="ToCountryId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Ülke Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlToCities">Ürünün Gideceği Şehir:</label>
+                <select id="ddlToCities" class="form-control" asp-for="ToCityId" asp-items="ViewBag.ToCities" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="ToCityId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Şehir Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlToDistrict">Ürünün Gideceği İlçe:</label>
+                <select id="ddlToDistrict" class="form-control" asp-for="ToDistrictId" asp-items="ViewBag.ToDistrict" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="ToDistrictId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen İlçe Seçiniz
+                </div>
+            </div>
+
+            <div class="col-12 product-add-container">
+                <input class="product-add" type="submit" value="Ekle" />
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr(".datepicker", {
+            dateFormat: "d/m/Y",
+            minDate: "today"
+        });
+
+        var sweetAlertMessage = '@TempData["SweetAlertMessage"]';
+        if (sweetAlertMessage !== '')
+        {
+            sweetAlertMessage += "İlan başarıyla eklendi.";
+            swal("Başarılı!", sweetAlertMessage, "success");
         }
-    </section>
+    </script>
+    <script type="text/javascript">
+        $(function ()
+        {
+            $("select").change(function ()
+            {
+                debugger;
+                var value = 0;
+                if ($(this).val() != "")
+                {
+                    value = $(this).val();
+                }
+                var id = $(this).attr("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Product/AjaxMethod",
+                    data: { "value": value, "type": id },
+                    contentType: 'application/x-www-form-urlencoded',
+                    dataType: "json",
+                    headers:
+                    {
+                        "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response)
+                    {
+                        switch (id)
+                        {
+                            case "ddlFromCountries":
+                                PopulateDropDown("#ddlFromCities", response.cities);
+                                break;
+                            case "ddlFromCities":
+                                PopulateDropDown("#ddlFromDistrict", response.district);
+                                break;
+                            case "ddlToCountries":
+                                PopulateDropDown("#ddlToCities", response.cities);
+                                break;
+                            case "ddlToCities":
+                                PopulateDropDown("#ddlToDistrict", response.district);
+                                break;
+                        }
+                    },
+                    failure: function (response)
+                    {
+                        alert(response.responseText);
+                    },
+                    error: function (response)
+                    {
+                        alert(response.responseText);
+                    }
+                });
+            });
+            function PopulateDropDown(dropDownId, list)
+            {
+                $(dropDownId).empty().append('<option selected="selected" disabled value="0">Seçiniz</option>');
+                if (list != null && list.length > 0)
+                {
+                    $.each(list, function ()
+                    {
+                        $(dropDownId).append($("<option></option>").val(this['value']).html(this['text']));
+                    });
+                }
+            }
+        });
+    </script>
+    <script>
+        (() =>
+        {
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form =>
+            {
+                form.addEventListener('submit', event =>
+                {
+                    let isEmpty = false;
+
+                    if (!form.checkValidity())
+                    {
+                        event.preventDefault();
+                        isEmpty = true;
+                    }
+
+                    const dateInput = form.querySelector('.datepicker');
+                    const invalidFeedback = dateInput.nextElementSibling;
+                    if (!dateInput.value)
+                    {
+                        invalidFeedback.style.display = 'block';
+                        event.preventDefault();
+                        isEmpty = true;
+                    } else
+                    {
+                        invalidFeedback.style.display = 'none';
+                    }
+
+                    if (isEmpty)
+                    {
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>
+

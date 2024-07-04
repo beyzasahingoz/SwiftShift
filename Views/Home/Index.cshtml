@@ -3,130 +3,52 @@
 }
 @using Microsoft.AspNetCore.Identity
 @using Bitirme.Areas.Identity.Data
-@model IEnumerable<Bitirme.Models.Explore>
+@model IEnumerable<Product>
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@*<!DOCTYPE html>
-<html>
-<head>
-    <title>SwiftShift</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://use.fontawesome.com/2b4da12501.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-/yIrL/Jvy3ZVEk7zWfE4B2GcpkNejYgk6iPDpk2GXYyF2sf21udXz5un3ERXwLrG5o95Wk5B+n0IsU6fu+DKKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #fff;
-            margin: 0;
-            padding: 0;
-            font-family: "Open Sans";
-        }
-
-        /* div {
-                    text-align: center;
-                    padding: 50px;
-                    background-color: #gray;
-                    color: #fff;
-                }*/
-
-        h1 {
-            font-size: 36px;
-            text-align: left;
-        }
-
-        /* button {
-                    background-color: #fff;
-                    color: #000;
-                    padding: 10px 20px;
-                    border: none;
-                    cursor: pointer;
-                    margin-left: -750px;
-                }*/
-
-        /*button:hover {
-                        background-color: rgb(67, 167, 86);
-                        color: black;
-                    }*/
-
-        section {
-            margin: 20px;
-            padding: 20px;
-            background-color: gray;
-        }
-
-        h2 {
-            font-size: 24px;
-            color: gray;
-        }
-
-        footer {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            position: relative;
-            bottom: 0;
-        }
-
-        #intro {
-            background-color: rgb(67, 167, 86);
-        }
-
-        h1, h3, h4, h5, h6 {
-            font-family: "Oswald"
-        }
-    </style>
-</head>
-<body>*@
-<!-- Image header -->
-@* <header class="w3-display-container w3-wide" id="home">
-        <img class="w3-image" src="~/images/delivery.jpg" alt="delivery" width="1800" height="530">
-        <div class="w3-display-left w3-padding-large">
-            <h1 class="w3-text-white">Swift Shift</h1>
-            <h1 class="w3-jumbo w3-text-white w3-hide-small"><b>Güvenilir Taşımacılık Platformu</b></h1>
-            <h6><button class="w3-button w3-black w3-padding-large w3-large w3-opacity w3-hover-opacity-off" onclick="window.location.href='/Identity/Account/Register'">Register</button></h6>
-        </div>
-    </header>*@
-
-<!-- Grid -->
-@*<div class="w3-row w3-padding w3-border">
-
-        <section>
-            <h2>Detay Bilgiler</h2>
-            <p>Burada platformumuz hakkında daha fazla bilgi bulabilirsiniz.</p>
-            <!-- Detay bilgilerinizi daha fazla içerik eklemek için kullanabilirsiniz. -->
-        </section>
-
-        <footer>
-            <h2>İletişim Bilgileri</h2>
-            <p>Adres: Örnek Adres, Şehir</p>
-            <p>Telefon: 123-456-7890</p>
-            <p>E-posta: info@swiftshift.com</p>
-            <!-- İletişim bilgilerinizi buraya ekleyebilirsiniz. -->
-        </footer>
-    </div>*@
-@*</body>
-</html>*@
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
 <style>
-    /*
-                                 * Always set the map height explicitly to define the size of the div element
-                                 * that contains the map.
-                                 */
     #map {
         height: 400px;
-        width: 900px;
+        width: 1500px;
     }
 
-    .card {
+    .modalcard {
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         max-width: 300px;
+        min-height: 352px;
         margin: auto;
         text-align: center;
         padding-bottom: 10px;
+    }
+
+    .card-input-element {
+        display: none;
+    }
+
+    .card-input {
+        margin: 10px;
+        padding: 0px;
+    }
+
+        .card-input:hover {
+            cursor: pointer;
+        }
+
+    .card-input-element:checked + .card-input {
+        box-shadow: 0 0 1px 1px #2ecc71;
     }
 
     .title {
@@ -151,48 +73,74 @@
         cursor: pointer;
     }
 
-    .card-header {
-        background-color: whitesmoke;
-        padding: 10px;
-    }
+    /*  .card-header {
+                                                                                                                                                                                                                                                                                                                        background-color: whitesmoke;
+                                                                                                                                                                                                                                                                                                                        padding: 10px;
+                                                                                                                                                                                                                                                                                                                    } */
 
     button {
         border: none;
         outline: 0;
         display: inline-block;
-        padding: 8px;
         color: white;
-        background-color: #000;
+        background-color: #4CAF50;
         text-align: center;
         cursor: pointer;
         width: 100%;
-        font-size: 18px;
+        border-radius: 20px;
+        font-size: 16px;
+        padding: 5px 9px;
+        transition: background-color 0.3s;
     }
 
-    .product-card {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin: 20px;
-        max-width: 400px;
-        min-height: 340px;
-        position: relative; /* Add this line */
-    }
-
-        .product-card:hover {
+        button:hover {
             background-color: honeydew;
         }
 
-    .product-image {
-        position: absolute;
-        top: 1;
-        right: 0;
-        max-width: 80px; /* Adjust the size as needed */
-        max-height: 80px; /* Adjust the size as needed */
-        padding-right: 10px;
+    .card-footer {
+        background-color: #4CAF50;
     }
+
+    #toggleFiltersBtn {
+        background-color: #4CAF50; /* Yeşil */
+        border: none;
+        color: white;
+        padding: 10px 15px; /* Genişlik küçültüldü */
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        float: right; /* Sağa yaslandı */
+    }
+
+
+    /* .product-card {
+                                                                                                                                                                                                                                                                                                                        background-color: #fff;
+                                                                                                                                                                                                                                                                                                                        border: 1px solid #ddd;
+                                                                                                                                                                                                                                                                                                                        border-radius: 8px;
+                                                                                                                                                                                                                                                                                                                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                                                                                                                                                                                                                                                                                                        overflow: hidden;
+                                                                                                                                                                                                                                                                                                                        margin: 20px;
+                                                                                                                                                                                                                                                                                                                        max-width: 400px;
+                                                                                                                                                                                                                                                                                                                        min-height: 340px;
+                                                                                                                                                                                                                                                                                                                        position: relative;
+                                                                                                                                                                                                                                                                                                                    }
+
+                                                                                                                                                                                                                                                                                                                        .product-card:hover {
+                                                                                                                                                                                                                                                                                                                            background-color: honeydew;
+                                                                                                                                                                                                                                                                                                                        }  */
+
+    /*  .product-image {
+                                                                                                                                                                                                                                                                                                                        position: absolute;
+                                                                                                                                                                                                                                                                                                                        top: 1;
+                                                                                                                                                                                                                                                                                                                        right: 0;
+                                                                                                                                                                                                                                                                                                                        max-width: 80px;
+                                                                                                                                                                                                                                                                                                                        max-height: 80px;
+                                                                                                                                                                                                                                                                                                                        padding-right: 10px;
+                                                                                                                                                                                                                                                                                                                    }  */
 
     a {
         text-decoration: none;
@@ -204,26 +152,578 @@
             opacity: 0.7;
         }
 
-    /*
-                                 * Optional: Makes the sample page fill the window.
-                                 */
-    /*html,
-                                body {
-                                    height: 100%;
-                                    margin: 0;
-                                    padding: 0;
-                                }*/
+    .col-md-6 {
+        flex: 0 0 auto;
+        width: calc(50% - 10px);
+        margin-bottom: 20px;
+    }
+
+    .col-md-01 {
+        width: 2%;
+    }
+
+    .animated-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 50px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .card {
+        width: 24rem;
+        height: 36rem;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        color: $color-primary-white;
+        box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.2);
+        img
+
+    {
+        position: absolute;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0.9;
+        transition: opacity .2s ease-out;
+    }
+
+    .rating-box {
+        top: 7px;
+        position: relative;
+        background: whitesmoke;
+        padding: 25px 100px 35px;
+        border-radius: 25px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .stars {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+        .stars input {
+            display: none;
+        }
+
+        .stars label {
+            color: #honeydew;
+            font-size: 35px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+            .stars label.active {
+                color: #ff9c1a;
+            }
+
+    h2 {
+        position: absolute;
+        inset: auto auto 30px 30px;
+        margin: 0;
+        transition: inset .3s .3s ease-out;
+        font-family: 'Roboto Condensed', sans-serif;
+        font-weight: normal;
+        text-transform: uppercase;
+    }
+
+    p, .prdctBtn {
+        position: absolute;
+        opacity: 0;
+        max-width: 80%;
+        transition: opacity .3s ease-out;
+    }
+
+    p {
+        inset: auto auto 80px 30px;
+    }
+
+    .prdctBtn {
+        inset: auto auto 40px 30px;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    &:hover h2 {
+        inset: auto auto 360px 30px;
+        transition: inset .3s ease-out;
+    }
+
+    &:hover p, &:hover .prdctBtn {
+        opacity: 1;
+        transition: opacity .5s .1s ease-in;
+    }
+
+    &:hover img {
+        transition: opacity .3s ease-in;
+        opacity: 0.5;
+    }
+
+    .product-img {
+        width: 100%;
+        height: auto;
+    }
 </style>
-
 <br />
+<div class="modal fade" id="ModalProduct" tabindex="-1" aria-labelledby="ModalProductLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hangi Ürününüz İçin İletişime Geçeceksiniz?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="productContainer" class="row"></div>
+                <button id="contactBtn" onclick="openContactPage()" style="display: none">İletişim Kur</button>
+                <div id="advertBtn" class="get-contact" style="display: none">
+                    <a class="btn-get-contact" asp-controller="Product" asp-action="Advert">Ürün Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="ModalTravel" tabindex="-1" aria-labelledby="ModalTravelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hangi Seyahatiniz İçin İletişime Geçeceksiniz?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hiddenProductId" value="" />
+                <input type="hidden" id="hiddenReceiverId" value="" />
+                <div id="travelContainer" class="row"></div>
+                <button id="contactTravelBtn" onclick="openContactTravelPage()" style="display: none">İletişim Kur</button>
+                <div id="travelBtn" class="get-contact" style="display: none">
+                    <a class="btn-get-contact" asp-controller="Travel" asp-action="AddTravel">Seyahat Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    var selectedProductId;
+
+    function formatDate(dateString) {
+        var date = new Date(dateString);
+        var day = date.getDate().toString().padStart(2, '0');
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var year = date.getFullYear();
+        return day + '/' + month + '/' + year;
+    }
+
+    $(document).ready(function() {
+        $('#ModalProduct').on('show.bs.modal', function(e) {
+            $.ajax({
+                url: '@Url.Action("GetAllUserProduct", "Home")',
+                type: 'GET',
+                success: function(data) {
+                    $('#productContainer').empty();
+                    if (data.length == 0) {
+                        $('#advertBtn').css('display', 'block');
+                    } else {
+                        $('#contactBtn').css('display', 'block');
+                        for (var i = 0; i < data.length; i++) {
+                            var product = data[i];
+                            $('#productContainer').append(`
+                                                                   <div class="col-md-6 mb-4">
+                                                                            <label>
+                                                                                <input type="radio" id="${product.productId}" name="product" class="card-input-element" />
+                                                                                <div class="modalcard card-default card-input">
+                                                                                    <div class="card-body">
+                                                                                        <p class="card-text"><strong>Ürün İsmi:</strong> ${product.productName}</p>
+                                                                                        <p class="card-text"><strong>Kilogram:</strong> ${product.productKg}</p>
+                                                                                        <p class="card-text"><strong>Ürünün Bulunduğu Yer:</strong> ${product.fromDistrict.districtName}/${product.fromCity.cityName}/${product.fromCountry.countryName}</p>
+                                                                                        <p class="card-text"><strong>Ürünün Gideceği Yer:</strong> ${product.toDistrict.districtName}/${product.toCity.cityName}/${product.toCountry.countryName}</p>
+                                                                                        <p class="card-text"><strong>Adres:</strong> ${product.address}</p>
+                                                                                        <p class="card-text"><strong>Gideceği Tarih:</strong> ${formatDate(product.whenDate)}</p>
+                                                                                        <p class="card-text"><strong>Not:</strong> ${product.productNote}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </label>
+                                                                        </div>                                                                                                                                                                                                                                                                                                                                                                                         `);
+                        }
+                        $('.card-input-element').click(function() {
+                            selectedProductId = $(this).attr('id');
+                        });
+                    }
+                },
+                error: function() {
+                    console.error('Error fetching data');
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function toggleFilters() {
+        var filterDiv = document.getElementById("filterDiv");
+        var toggleFiltersBtn = document.getElementById("toggleFiltersBtn");
+
+        if (filterDiv.style.display === "none") {
+            filterDiv.style.display = "block";
+            toggleFiltersBtn.textContent = "Filtrelemeyi Kapat";
+        } else {
+            filterDiv.style.display = "none";
+            toggleFiltersBtn.textContent = "Filtrele";
+        }
+    }
+</script>
+<script>
+    var selectedTravelId;
+    var productId;
+    var receiverId;
+
+    $(document).ready(function() {
+        $('#ModalTravel').on('show.bs.modal', function(e) {
+            $.ajax({
+                url: '@Url.Action("GetAllUserTravel", "Home")',
+                type: 'GET',
+                success: function(data) {
+                    $('#travelContainer').empty();
+                    if (data.length == 0) {
+                        $('#travelBtn').css('display', 'block');
+                    } else {
+                        $('#contactTravelBtn').css('display', 'block');
+                        for (var i = 0; i < data.length; i++) {
+                            var travel = data[i];
+                            $('#travelContainer').append(`
+                                                    <div class="col-md-6 mb-4">
+                                                     <label>
+                                                        <input type="radio" id="${travel.travelId}" name="travel" class="card-input-element" />
+                                                        <div class="modalcard card-default card-input">
+                                                            <div class="card-body">
+                                                                <p class="card-text"><strong>Kalkış Yeri:</strong> ${travel.departureDistrict.districtName}/${travel.departureCity.cityName}/${travel.departureCountry.countryName}</p>
+                                                                <p class="card-text"><strong>Varış Yeri:</strong> ${travel.arrivalDistrict.districtName}/${travel.arrivalCity.cityName}/${travel.arrivalCountry.countryName}</p>
+                                                                <p class="card-text"><strong>Kalkış Tarihi:</strong> ${formatDate(travel.departureDate)}</p>
+                                                                <p class="card-text"><strong>Varış Tarihi:</strong> ${formatDate(travel.arrivalDate)}</p>
+                                                                <p class="card-text"><strong>Taşınabilecek Maximum Kilogram:</strong> ${travel.maxWeightCarry}</p>
+                                                                <p class="card-text"><strong>Kilogram Başına Belirlenen Ücret:</strong> ${travel.pricePerKg}</p>
+                                                            </div>
+                                                        </div>
+                                                 </label>
+                                                 </div>
+                                            `);
+                        }
+
+                        $('.card-input-element').click(function() {
+                            selectedTravelId = $(this).attr('id');
+                        });
+                    }
+                },
+                error: function() {
+                    console.error('Error fetching data');
+                }
+            });
+        });
+    });
+
+
+    function TravelModal(productId, receiverId) {
+        $.ajax({
+            url: '@Url.Action("GetCheckTravelChat", "Home")',
+            type: 'GET',
+            data: {
+                receiverId: receiverId,
+            },
+            success: function(response) {
+                if (response == 1) {
+                    swal("Hata!", "Eski Sohbetinizi Sonlandırmadan Yeni Bir İletişim Kuramazsınız.!", "error", {
+                        button: "Tamam",
+                        timer: 5000
+                    });
+                    return;
+                }
+                else {
+                    $('#hiddenProductId').val(productId);
+                    $('#hiddenReceiverId').val(receiverId);
+
+                    $('#ModalTravel').modal('show');
+                }
+            },
+            error: function(response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+    function openContactTravelPage() {
+        debugger;
+        productId = $('#hiddenProductId').val();
+        receiverId = $('#hiddenReceiverId').val();
+
+        if (selectedTravelId) {
+            var url = '@Url.Action("AddMessageInfo", "Home")?customerUserId=' + receiverId + '&productId=' + productId + '&travelId=' + selectedTravelId;
+            window.location.href = url;
+        }
+        else {
+            swal("Hata!", "Seyahat Seçmeden İletişime Geçemezsiniz!", "error", {
+                button: "Tamam",
+                timer: 5000
+            });
+        }
+    }
+</script>
+<script type="text/javascript">
+    $(function() {
+        $("select").change(function() {
+            debugger;
+            var value = 0;
+            if ($(this).val() != "") {
+                value = $(this).val();
+            }
+            var id = $(this).attr("id");
+            $.ajax({
+                url: '@Url.Action("AjaxMethod", "Home")',
+                type: 'GET',
+                data: { "value": value, "type": id },
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "json",
+                headers:
+                {
+                    "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    switch (id) {
+                        case "ddlDepartureCities":
+                            PopulateDropDown("#ddlDepartureDistrict", response.district);
+                            break;
+                        case "ddlArrivalCities":
+                            PopulateDropDown("#ddlArrivalDistrict", response.district);
+                            break;
+                    }
+                },
+                failure: function(response) {
+                    alert(response.responseText);
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+        function PopulateDropDown(dropDownId, list) {
+            $(dropDownId).empty().append('<option selected="selected" value="0">Seçiniz</option>');
+            if (list != null && list.length > 0) {
+                $.each(list, function() {
+                    $(dropDownId).append($("<option></option>").val(this['value']).html(this['text']));
+                });
+            }
+        }
+
+        $("#filterButton").click(function() {
+            debugger;
+            var departureCity = $("#ddlDepartureCities").val();
+            var departureDistrict = $("#ddlDepartureDistrict").val();
+            var arrivalCity = $("#ddlArrivalCities").val();
+            var arrivalDistrict = $("#ddlArrivalDistrict").val();
+            var minDepartureDate = $("#departureDatepicker").val();
+            var maxDepartureDate = $("#arrivalDatepicker").val();
+            var seeProduct = $("#seeProductCheckbox").is(":checked") ? 1 : 0;
+            var carrySensitiveProduct = $("#carrySensitiveCheckbox").is(":checked") ? 1 : 0;
+
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 41.013000, lng: 28.974800 },
+                zoom: 8
+            });
+
+            $.ajax({
+                url: '@Url.Action("GetAllLocation", "Home")',
+                type: 'GET',
+                data: {
+                    departureCity: departureCity,
+                    departureDistrict: departureDistrict,
+                    arrivalCity: arrivalCity,
+                    arrivalDistrict: arrivalDistrict,
+                    minDepartureDate: minDepartureDate,
+                    maxDepartureDate: maxDepartureDate,
+                    seeProduct: seeProduct,
+                    carrySensitiveProduct: carrySensitiveProduct
+                },
+                success: function(response) {
+                    markerArray = [];
+                    for (var i = 0; i < response.length; i++) {
+                        createMarker(response[i]);
+                    }
+
+                    var mc = new MarkerClusterer(map, markerArray, {
+                        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                        gridSize: 2
+                    });
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+        $("#clearFilterButton").click(function() {
+            debugger
+            document.getElementById("departureDatepicker").value = "";
+            document.getElementById("arrivalDatepicker").value = "";
+            document.getElementById("ddlDepartureCities").selectedIndex = 0;
+            document.getElementById("ddlDepartureDistrict").selectedIndex = 0;
+            document.getElementById("ddlArrivalCities").selectedIndex = 0;
+            document.getElementById("ddlArrivalDistrict").selectedIndex = 0;
+            document.getElementById("seeProductCheckbox").checked = false;
+            document.getElementById("carrySensitiveCheckbox").checked = false;
+
+            var departureCity = 0;
+            var departureDistrict = 0;
+            var arrivalCity = 0;
+            var arrivalDistrict = 0;
+            var minDepartureDate = "";
+            var maxDepartureDate = "";
+            var seeProduct = false;
+            var carrySensitiveProduct = false;
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 41.013000, lng: 28.974800 },
+                zoom: 8
+            });
+
+            $.ajax({
+                url: '@Url.Action("GetAllLocation", "Home")',
+                type: 'GET',
+                data: {
+                    departureCity: departureCity,
+                    departureDistrict: departureDistrict,
+                    arrivalCity: arrivalCity,
+                    arrivalDistrict: arrivalDistrict,
+                    minDepartureDate: minDepartureDate,
+                    maxDepartureDate: maxDepartureDate,
+                    seeProduct: seeProduct,
+                    carrySensitiveProduct: carrySensitiveProduct
+                },
+                success: function(response) {
+                    markerArray = [];
+                    for (var i = 0; i < response.length; i++) {
+                        createMarker(response[i]);
+                    }
+
+                    var mc = new MarkerClusterer(map, markerArray, {
+                        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+                        gridSize: 2
+                    });
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+<button id="toggleFiltersBtn" onclick="toggleFilters()">Filtrele</button>
+<div id="filterDiv" class="row" style="display: none;">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Gidiş Tarihi:</label>
+            <input id="departureDatepicker" class="datepicker when-date form-control" type="text" name="departureDatepicker" placeholder="Gidiş Tarihi Seçiniz" />
+        </div>
+        <div class="form-group col-md-6">
+            <label>Varış Tarihi:</label>
+            <input id="arrivalDatepicker" class="datepicker return-date form-control" type="text" name="arrivalDatepicker" placeholder="Varış Tarihi Seçiniz" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Kalkış Şehri:</label>
+            <select id="ddlDepartureCities" class="form-control" asp-items="ViewBag.DepartureCities">
+                <option value="">Seçiniz</option>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Kalkış İlçesi:</label>
+            <select id="ddlDepartureDistrict" class="form-control" asp-items="ViewBag.DepartureDistrict">
+                <option value="">Seçiniz</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label>Varış Şehri:</label>
+            <select id="ddlArrivalCities" class="form-control" asp-items="ViewBag.ArrivalCities">
+                <option value="">Seçiniz</option>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Varış İlçesi:</label>
+            <select id="ddlArrivalDistrict" class="form-control" asp-items="ViewBag.ArrivalDistrict">
+                <option value="">Seçiniz</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-01">
+        </div>
+        <div class="form-group col-md-6">
+            <input class="form-check-input" type="checkbox" value="1" id="seeProductCheckbox" name="seeProduct">
+            <label class="form-check-label" for="seeProductCheckbox">
+                Ürünü Görmek İster
+            </label>
+        </div>
+        <div class="form-group col-md-5">
+            <input class="form-check-input" type="checkbox" value="1" id="carrySensitiveCheckbox" name="carrySensitiveProduct">
+            <label class="form-check-label" for="carrySensitiveCheckbox">
+                Hassas Ürün Taşır
+            </label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-6 d-flex justify-content-start">
+            <button id="filterButton" class="btn btn-primary mr-1">Filtrele</button>
+        </div>
+        <div class="col-md-6 d-flex justify-content-start">
+            <button id="clearFilterButton" class="btn btn-secondary">Temizle</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    flatpickr(".datepicker", {
+        dateFormat: "d/m/Y",
+        minDate: "today"
+    });
+    $(function() {
+        $(".datepicker").datepicker();
+    });
+</script>
+
+@if (TempData["PaymentMessage"] != null)
+{
+    <script>
+        var VerifiedMessage = '@TempData["PaymentMessage"]';
+        if (VerifiedMessage !== '') {
+            VerifiedMessage += "Ödeme başarılı!";
+            swal("Başarılı!", VerifiedMessage, "success");
+        }
+    </script>
+}
 <div class="row">
     <div id="map"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var map;
         var markerArray = [];
         var $ = jQuery.noConflict();
+        var receiverId;
+        var receiverUsername;
+        var travelId;
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -231,10 +731,8 @@
                 zoom: 8
             });
 
-            $.get("@Url.Action("GetAllLocation", "Home")", function (data)
-            {
-                for (var i = 0; i < data.length; i++)
-                {
+            $.get("@Url.Action("GetAllLocation", "Home")", function(data) {
+                for (var i = 0; i < data.length; i++) {
                     createMarker(data[i]);
                 }
 
@@ -246,10 +744,9 @@
             console.log(markerArray);
         }
 
-        function createMarker(data)
-        {
+        function createMarker(data) {
             var image = {
-                url: 'data:image/*;base64, ' + data.profilePicture,
+                url: 'data:image/*;base64, ' + data.profilepicture,
                 size: new google.maps.Size(50, 50),
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(25, 25),
@@ -263,15 +760,55 @@
                 // zIndex: Math.round(parseFloat(data.latitude) * -100000) << 5
             });
 
-            var receiverId = data.id;
-            var receiverUsername = data.userName;
+            var currReceiverId = data.id;
+            var currReceiverUsername = data.userName;
+            travelId = data.travelId;
+            var starRating = '';
+            var rating = data.point;
+            var maxRating = 5;
 
-            var contentString = '<div class="card">' +
-                '<img class="rounded-circle index" src="data:image/*;base64, ' + data.profilePicture + '">' +
+            for (var i = 1; i <= maxRating; i++) {
+                if (i <= rating) {
+                    starRating += '<i class="fa fa-duotone fa-star"></i>';
+                } else {
+                    starRating += '';
+                }
+            }
+            if (data.seeProduct == 1) {
+                var eyeIcon = '<i class="fa fa-regular fa-eye" style="font-size:20px;color:orange"></i>';
+            }
+            else {
+                var eyeIcon = '';
+            }
+
+            if (data.carrySensitiveProduct == 1) {
+                var warnIcon = '<i class="fa fa-warning" style="font-size:20px; color:orange" ></i>';
+            }
+            else {
+                var warnIcon = '';
+            }
+
+            var contentString = '<div class="modalcard">' +
+                '<div style="position: relative;">' +
+                eyeIcon + warnIcon +
+                '<img class="rounded-circle index" src="data:image/*;base64, ' + data.profilepicture + '">' +
+                '</div>' +
                 '<h2>' + data.ad + ' ' + data.soyad + '</h2>' +
+                '<div class="rating-box">' +
+                '<div class="stars">' +
+                starRating +
+                '</div>' +
+                '</div>' +
                 '<p>Puan: ' + data.point + '</p>' +
                 '<p>Tanım: ' + data.profileDescription + '</p>' +
-                '<p><button onclick="openContactPage(\'' + receiverId + ',' + receiverUsername + '\')">İletişim Kur</button></p>' +
+                '<p>Nereden: ' + data.departureCity + '/' + data.departureDistrict + '</p>' +
+                '<p>Nereye: ' + data.arrivalCity + '/' + data.arrivalDistrict + '</p>' +
+                '<p>Gidiş Tarihi:' + data.departureDate + '</p>' +
+                '<p>Dönüş Tarihi:' + data.arrivalDate + '</p>' +
+                '<p>Maximum Taşınabilecek Kilogram: ' + data.maxWeightCarry + '</p>' +
+                '<p>Kilogram Başına İstenen Ücret: ' + data.pricePerKg + '</p>' +
+                '<p><button onclick="btnProduct(\'' + currReceiverId + ',' + currReceiverUsername + '\')">İletişim Kur</button></p>' +
+                '<p><button onclick="btnProfile(\'' + currReceiverId + '\')">Profile Git</button></p>' +
                 '</div>';
 
             var infowindow = new google.maps.InfoWindow({
@@ -280,18 +817,58 @@
 
             markerArray.push(marker);
 
-            google.maps.event.addListener(marker, 'mouseover', function ()
-            {
+            google.maps.event.addListener(marker, 'mouseover', function() {
                 infowindow.open(map, marker);
             });
         }
 
-        function openContactPage(receiver) {
-            var receiverId = receiver.split(',')[0];
-            var receiverUsername = receiver.split(',')[1];
-            var url = '@Url.Action("Message", "Home")?receiverId=' + receiverId + '&receiverUsername=' + receiverUsername;
+        function btnProduct(receiver) {
+            receiverId = receiver.split(',')[0];
+            receiverUsername = receiver.split(',')[1];
+
+            $.ajax({
+                url: '@Url.Action("GetCheckProductChat", "Home")',
+                type: 'GET',
+                data: {
+                    receiverId: receiverId,
+                },
+                success: function(response) {
+                    if (response == 1) {
+                        swal("Hata!", "Yeni Bir İletişim Kuramazsınız.!", "error", {
+                            button: "Tamam",
+                            timer: 5000
+                        });
+                        return;
+                    } else {
+                        $('#ModalProduct').modal('show');
+                    }
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function btnProfile(receiverId) {
+            debugger;
+            var url = '@Url.Action("Profile", "Main")?receiverId=' + receiverId;
             window.location.href = url;
         }
+
+        function openContactPage() {
+            if (selectedProductId) {
+                var url = '@Url.Action("AddMessageInfo", "Home")?transportUserId=' + receiverId + '&productId=' + selectedProductId + '&travelId=' + travelId;
+                window.location.href = url;
+            }
+            else {
+                swal("Hata!", "Ürün Seçmeden İletişime Geçemezsiniz!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+            }
+        }
+
+
     </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCY8T6t2s5mXZsmfTmbuoUULhZ1Rnn-wgA&callback=initMap"></script>
@@ -299,35 +876,39 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="stylesheet">
     <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-        <div class="container">
-            <div class="row">
-                @foreach (var explore in Model)
-                {
-                    <div class="col-md-4">
-                        <div class="product-card">
-                            <div class="card-header">
-                                <h5 class="card-title">İlan Detayları</h5>
-                            </div>
-                            <div class="form-group col-md-6"></div>
-                            <div class="card-body">
-                                <img src="~/images/profilePicture.png" alt="Product Image" style="text-align:center; cursor:pointer" class="img-fluid product-image"
-                                 data-toggle="modal" data-target="#exampleModal" />
-                                <p class="card-text"><strong>Ürün İsmi:</strong> @explore.ProductName</p>
-                                <p class="card-text"><strong>Ülke:</strong> @explore.Country</p>
-                                <p class="card-text"><strong>Şehir:</strong> @explore.City</p>
-                                <p class="card-text"><strong>Adres:</strong> @explore.Address</p>
-                                <p class="card-text"><strong>Kilogram:</strong> @explore.ProductKg</p>
-                                <p class="card-text"><strong>Not:</strong> @explore.Note</p>
-                            </div>
-                            <div class="get-contact">
-                                <a class="btn-get-contact" asp-controller="Main" asp-action="Message">İletişim Kur</a>
-                            </div>
+    <div class="container">
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="animated-card col-md-4">
+                    <div class="card">
+                        @if (@product.ProductImage == null)
+                        {
+                            <img src="~/images/delivery.jpg" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                        }
+                        else
+                        {
+                            <img src="data:image/*;base64,@(Convert.ToBase64String(@product.ProductImage))" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                        }
+                        <div class="card-content">
+                            <h2>
+                                @product.ProductName
+                            </h2>
+                            <p class="card-text">
+                                <strong>Kilogram:</strong> @product.ProductKg <br />
+                                <strong>Ürünün Bulunduğu Yer:</strong> @product.FromDistrict.DistrictName/ @product.FromCity.CityName/ @product.FromCountry.CountryName <br />
+                                <strong>Ürünün Gideceği Yer:</strong> @product.ToDistrict.DistrictName/ @product.ToCity.CityName/ @product.ToCountry.CountryName <br />
+                                <strong>Adres:</strong> @product.Address <br />
+                                <strong>Gideceği Tarih:</strong> @product.WhenDate.ToString("dd/MM/yyyy") <br />
+                                <strong>Not:</strong> @product.ProductNote
+                            </p>
+                            <button class="prdctBtn" type="button" onclick="TravelModal('@product.ProductId', '@product.UserId')">İletişim Kur</button>
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
         </div>
-    </header>
+    </div>
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -338,9 +919,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- You can customize the content of the modal here -->
                     <img src="~/images/profilePicture.png" alt="Product Image" class="img-fluid" />
-                    <!-- Other details or additional information can be added here -->
                 </div>
             </div>
         </div>

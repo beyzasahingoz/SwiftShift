@@ -1,0 +1,36 @@
+﻿@model ConfirmMailViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Mail</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center">Mail Doğrulama</h3>
+                    <form method="post">
+                        <input type="hidden" asp-for="Email" value="@ViewBag.v" />
+                        <div class="form-group">
+                            <label for="confirmCode">Mail Adresinize Gelen 6 Haneli Kodu Giriniz</label>
+                            <input type="text" class="form-control" asp-for="ConfirmCode" id="confirmCode" />
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Hesabı Aktifleştir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

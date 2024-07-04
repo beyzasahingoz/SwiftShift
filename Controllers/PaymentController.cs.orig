@@ -1,0 +1,134 @@
+﻿using Bitirme.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System;
+using Iyzipay;
+using Iyzipay.Model;
+using Iyzipay.Request;
+using Bitirme.Areas.Identity.Data;
+using Bitirme.Migrations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using NuGet.Protocol.Plugins;
+
+namespace Bitirme.Controllers
+{
+    public class PaymentController : Controller
+    {
+        private readonly ILogger<PaymentController> _logger;
+
+        private readonly DbContextSwiftShift _context;
+
+        private readonly UserManager<ApplicationUser> _userManager;
+        private int curProductId;
+        public PaymentController(ILogger<PaymentController> logger, DbContextSwiftShift context, UserManager<ApplicationUser> userManager, int curProductId)
+        {
+            _logger = logger;
+            _context = context;
+            _userManager = userManager;
+            curProductId = 0;
+        }
+
+        //string email, string isim, string soyisim, string tc, string sehir, string ilce, string adres
+        public ActionResult Payment(int ProductID, string UserID, decimal price)
+        {
+            string token = "";
+            Options options = new Options();
+            options.ApiKey = "sandbox-a21qIienSHPjF86nOzuLu4enl8eTfAx1";
+            options.SecretKey = "sandbox-OMeQUm7gvZ9fnAZtPwp7IEd6frHo4tfT";
+            options.BaseUrl = "https://sandbox-api.iyzipay.com";
+
+            Product order = _context.tbl_products.Where(x => x.ProductId == ProductID).FirstOrDefault();
+            ApplicationUser user = _context.AspNetUsers.Where(x => x.Id == UserID).FirstOrDefault();
+            curProductId = ProductID;
+
+            CreateCheckoutFormInitializeRequest request = new CreateCheckoutFormInitializeRequest();
+            request.Locale = Locale.TR.ToString();
+            request.ConversationId = order.ProductId.ToString();
+            request.Price = price.ToString();
+            request.PaidPrice = "130";
+            request.Currency = Currency.TRY.ToString();
+            //request.BasketId = order.BasketId.ToString();
+            request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
+            request.CallbackUrl = Url.Action("CallBack", "Payment", new { id = order.ProductId, token = token }, Request.Scheme); 
+            request.Buyer = new Buyer();
+            request.Buyer.Id = user.Id.ToString();
+            request.Buyer.Name = user.Ad;
+            request.Buyer.Surname = user.Soyad;
+            request.Buyer.Email = user.Email;
+            request.Buyer.IdentityNumber = "31422655738";
+            request.Buyer.RegistrationAddress = user.Address;
+            request.Buyer.City = "asdsfd";
+            request.Buyer.Country = "Türkiye";
+
+            request.BillingAddress = new Address
+            {
+                ContactName = user.Ad + " " + user.Soyad,
+                City = "asdsaf",
+                Country = "Türkiye",
+                Description = user.Address
+            };
+
+            // Ben her siparişte tek bir olacak şekilde ayarladığım için sepette tek ürün var o da siparişin kendisi.
+            request.BasketItems = new List<BasketItem>
+            {
+                new BasketItem
+                {
+                    Id = order.ProductId.ToString(),
+                    Name = order.ProductName,
+                    Category1 = order.ProductName,
+                    ItemType = BasketItemType.VIRTUAL.ToString(),
+                    Price = price+".00", // Sonuna .00 eklemek şart.
+                },
+            };
+
+            CheckoutFormInitialize checkoutFormInitialize = CheckoutFormInitialize.Create(request, options);
+            ViewBag.Iyzico = checkoutFormInitialize.CheckoutFormContent;
+            token = checkoutFormInitialize.Token;
+
+            //order.token = checkoutFormInitialize.Token; // Form'a ait token'ı kayıt ederek sonradan ödeme kontrolü yaparken kullancağız.
+            //_educationOrderManager.Update(productOrder);
+            return View();
+        }
+
+        public async Task<IActionResult> CallBack(string id, string token)
+        {
+
+            Options options = new Options();
+            options.ApiKey = "sandbox-a21qIienSHPjF86nOzuLu4enl8eTfAx1";
+            options.SecretKey = "sandbox-OMeQUm7gvZ9fnAZtPwp7IEd6frHo4tfT";
+            options.BaseUrl = "https://sandbox-api.iyzipay.com";
+
+            var order = _context.tbl_products.FirstOrDefault(x => x.ProductId == Convert.ToInt32(id));
+
+            RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
+            request.Locale = Locale.TR.ToString();
+            request.ConversationId = id;
+            request.Token = token;
+
+            CheckoutForm checkoutForm = CheckoutForm.Retrieve(request, options);
+
+            if (checkoutForm.PaymentStatus == "SUCCESS")
+            {
+<<<<<<< Updated upstream
+                TempData["PaymentMessage"] = "Ödeme işlemi başarıyla gerçekleştirildi!";
+                order.isOrder = 1;
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return BadRequest("Ödeme başarısız oldu!");
+=======
+                Product product = _context.tbl_products.FirstOrDefault(x => x.ProductId == curProductId);
+                if (product != null)
+                {
+                    product.isorder = 1; // Ödeme başarılı olduğunda isorder değerini 1 yap
+                    _context.SaveChanges(); // Değişiklikleri kaydet
+                }
+                return RedirectToAction("Onay");
+>>>>>>> Stashed changes
+            }
+        }
+    }
+}

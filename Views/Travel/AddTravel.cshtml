@@ -1,0 +1,361 @@
+﻿@model Travel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @{
+        ViewData["Title"] = "AddTravel";
+    }
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-8HUsf4PLvM2dXu4Zg2K2KDEDODSYNIVg7cbvFb8ZD1hW0VOrKu4tpPzX8Bm9JU4Se+PeyUemAo5usI2VZrMpxg==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .card {
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 1000px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        select,
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            width: 30%;
+            margin-bottom: 15px;
+        }
+
+            .form-group.full-width {
+                width: 100%;
+            }
+
+        .travel-add-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .travel-add {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .travel-add:hover {
+                background-color: #45a049;
+            }
+    </style>
+    <script>
+        function showFileInput() {
+            document.getElementById('fileInput').click();
+        }
+    </script>
+</head>
+<body>
+    <div class="card">
+        <form id="travelForm" class="row g-3 travel-form needs-validation" enctype="multipart/form-data" novalidate action="@Url.Action("AddTravel", "Travel")" method="post">
+            @Html.AntiForgeryToken()
+            <div class="col-md-4">
+                <label for="ddlDepartureCountries">Kalkış Ülkesi:</label>
+                <select id="ddlDepartureCountries" class="form-control" asp-for="DepartureCountryId" asp-items="ViewBag.DepartureCountries" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="DepartureCountryId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Ülke Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlDepartureCities">Kalkış Şehri:</label>
+                <select id="ddlDepartureCities" class="form-control" asp-for="DepartureCityId" asp-items="ViewBag.DepartureCities" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="DepartureCityId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Şehir Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlDepartureDistrict">Kalkış İlçesi:</label>
+                <select id="ddlDepartureDistrict" class="form-control" asp-for="DepartureDistrictId" asp-items="ViewBag.DepartureDistrict" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="DepartureDistrictId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen İlçe Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlArrivalCountries">Varış Ülkesi:</label>
+                <select id="ddlArrivalCountries" class="form-control" asp-for="ArrivalCountryId" asp-items="ViewBag.ArrivalCountries" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="ArrivalCountryId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Ülke Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlArrivalCities">Varış Şehri:</label>
+                <select id="ddlArrivalCities" class="form-control" asp-for="ArrivalCityId" asp-items="ViewBag.ArrivalCities" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="ArrivalCityId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen Şehir Seçiniz
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="ddlArrivalDistrict">Varış İlçesi:</label>
+                <select id="ddlArrivalDistrict" class="form-control" asp-for="ArrivalDistrictId" asp-items="ViewBag.ArrivalDistrict" required>
+                    <option value="">Seçiniz</option>
+                </select>
+                <span asp-validation-for="ArrivalDistrictId" class="text-danger"></span>
+                <div class="invalid-feedback">
+                    Lütfen İlçe Seçiniz
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Kalkış Tarihi:</label>
+                <input id="departureDatepicker" class="datepicker departure-date" type="text" name="departureDate" required />
+                <div class="invalid-feedback">
+                    Lütfen Tarih Seçiniz
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Varış Tarihi:</label>
+                <input id="arrivalDatepicker" class="datepicker arrival-date" type="text" name="arrivalDate" required />
+                <div class="invalid-feedback">
+                    Lütfen Tarih Seçiniz
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Taşınabilecek Maximum Kilogram:</label>
+                <input type="number" class="form-control" name="MaxWeightCarry" required />
+                <div class="invalid-feedback">
+                    Lütfen Maximum Kilogram Giriniz
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label>Kilogram Başına Belirlenen Ücret:</label>
+                <input type="number" class="form-control" name="pricePerKg" required />
+                <div class="invalid-feedback">
+                    Lütfen Ücret Giriniz
+                </div>
+            </div>
+            <div class="col-md-6 form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="seeProductCheckbox" name="seeProduct">
+                <label class="form-check-label" for="seeProductCheckbox">
+                    Ürünü Görmek İstiyorum
+                </label>
+            </div>
+            <div class="col-md-6 form-group">
+                <input class="form-check-input" type="checkbox" value="1" id="carrySensitiveCheckbox" name="carrySensitiveProduct">
+                <label class="form-check-label" for="carrySensitiveCheckbox">
+                    Hassas Ürün Taşır
+                </label>
+            </div>
+            <div class="col-12 travel-add-container">
+                <input class="travel-add" type="submit" value="Ekle" />
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+    <script>
+        flatpickr(".datepicker", {
+            dateFormat: "d/m/Y",
+            minDate: "today"
+        });
+
+        var sweetAlertMessage = '@TempData["SweetAlertMessage"]';
+        if (sweetAlertMessage !== '') {
+            sweetAlertMessage += " Seyahat başarıyla eklendi.";
+            swal("Başarılı!", sweetAlertMessage, "success");
+        }
+
+        $(document).ready(function() {
+            $(".travel-form").submit(function(e) {
+                var seeProductChecked = $("#seeProductCheckbox").is(":checked");
+                var carrySensitiveChecked = $("#carrySensitiveCheckbox").is(":checked");
+
+                $("#seeProductHidden").val(seeProductChecked ? 1 : 0);
+                $("#carrySensitiveHidden").val(carrySensitiveChecked ? 1 : 0);
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(function() {
+            $("select").change(function() {
+                CheckDateValidity();
+                var value = 0;
+                if ($(this).val() != "") {
+                    value = $(this).val();
+                }
+                var id = $(this).attr("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Travel/AjaxMethod",
+                    data: { "value": value, "type": id },
+                    contentType: 'application/x-www-form-urlencoded',
+                    dataType: "json",
+                    headers:
+                    {
+                        "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        switch (id) {
+                            case "ddlDepartureCountries":
+                                PopulateDropDown("#ddlDepartureCities", response.cities);
+                                break;
+                            case "ddlDepartureCities":
+                                PopulateDropDown("#ddlDepartureDistrict", response.district);
+                                break;
+                            case "ddlArrivalCountries":
+                                PopulateDropDown("#ddlArrivalCities", response.cities);
+                                break;
+                            case "ddlArrivalCities":
+                                PopulateDropDown("#ddlArrivalDistrict", response.district);
+                                break;
+                        }
+                    },
+                    failure: function(response) {
+                        alert(response.responseText);
+                    },
+                    error: function(response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+            function PopulateDropDown(dropDownId, list) {
+                $(dropDownId).empty().append('<option selected="selected" value="0">Seçiniz</option>');
+                if (list != null && list.length > 0) {
+                    $.each(list, function() {
+                        $(dropDownId).append($("<option></option>").val(this['value']).html(this['text']));
+                    });
+                }
+            }
+
+            $(".datepicker").change(function() {
+                CheckDateValidity();
+            });
+
+            function CheckDateValidity() {
+                var departureDateStr = $("#departureDatepicker").val();
+                var arrivalDateStr = $("#arrivalDatepicker").val();
+
+                var departureParts = departureDateStr.split("/");
+                var arrivalParts = arrivalDateStr.split("/");
+
+                var departureYear = parseInt(departureParts[2]);
+                var departureMonth = parseInt(departureParts[1]) - 1;
+                var departureDay = parseInt(departureParts[0]);
+
+                var arrivalYear = parseInt(arrivalParts[2]);
+                var arrivalMonth = parseInt(arrivalParts[1]) - 1;
+                var arrivalDay = parseInt(arrivalParts[0]);
+
+                var departureDate = new Date(departureYear, departureMonth, departureDay);
+                var arrivalDate = new Date(arrivalYear, arrivalMonth, arrivalDay);
+
+                if (departureDate > arrivalDate) {
+                    swal("Hata!", "Kalkış Tarihi, Varış Tarihinden Büyük Olamaz!", "error", {
+                        button: "Tamam",
+                        timer: 5000
+                    });
+                    $(".travel-add").prop("disabled", true);
+                } else {
+                    $(".travel-add").prop("disabled", false);
+                }
+            }
+        });
+    </script>
+    <script>
+        (() => {
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    let isEmpty = false;
+
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        isEmpty = true;
+                    }
+
+                    const departureDateInput = form.querySelector('.departure-date');
+                    const departureInvalidFeedback = departureDateInput.nextElementSibling;
+                    if (!departureDateInput.value) {
+                        departureInvalidFeedback.style.display = 'block';
+                        event.preventDefault();
+                        isEmpty = true;
+                    } else {
+                        departureInvalidFeedback.style.display = 'none';
+                    }
+
+                    const arrivalDateInput = form.querySelector('.arrival-date');
+                    const arrivalInvalidFeedback = arrivalDateInput.nextElementSibling;
+                    if (!arrivalDateInput.value) {
+                        arrivalInvalidFeedback.style.display = 'block';
+                        event.preventDefault();
+                        isEmpty = true;
+                    } else {
+                        arrivalInvalidFeedback.style.display = 'none';
+                    }
+
+                    if (isEmpty) {
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+    </script>
+</body>
+</html>

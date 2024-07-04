@@ -21,9 +21,16 @@ public class DbContextSwiftShift : IdentityDbContext<ApplicationUser>
     public virtual DbSet<District> District { get; set; }
 
     public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
-    public DbSet<Product> tbl_products { get; set; }
+    public virtual DbSet<Product> tbl_products { get; set; }
+    public virtual DbSet<Comment> Comments { get; set; }
+
+    public virtual DbSet<Travel> Travel { get; set; }
 
     public DbSet<Message> Messages { get; set; }
+
+    public virtual DbSet<MoneyTransaction> MoneyTransaction { get; set; }
+
+    public virtual DbSet<MessageInfo> MessageInfo { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -57,13 +64,13 @@ internal class ProductEntityConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.Property(x => x.ProductId);
-        builder.Property(x => x.ProductName).HasMaxLength(255);
-        builder.Property(x => x.CountryId);
-        builder.Property(x => x.CityId);
-        builder.Property(x => x.Address).HasMaxLength(255);
-        builder.Property(x => x.ProductKg).HasMaxLength(255);
-        builder.Property(x => x.ProductNote).HasMaxLength(255);
+        //builder.Property(x => x.ProductId);
+        //builder.Property(x => x.ProductName).HasMaxLength(255);
+        //builder.Property(x => x.CountryId);
+        //builder.Property(x => x.CityId);
+        //builder.Property(x => x.Address).HasMaxLength(255);
+        //builder.Property(x => x.ProductKg).HasMaxLength(255);
+        //builder.Property(x => x.ProductNote).HasMaxLength(255);
     }
 }
 

@@ -5,7 +5,8 @@ namespace Bitirme.Models
 {
     public class Advert
     {
-        public int UserId { get; set; }
+        [ForeignKey("Id")]
+        public string UserId { get; set; }
         [Key]
         public int ProductId { get; set; }
         public string ProductName { get; set; }

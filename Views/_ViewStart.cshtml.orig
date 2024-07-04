@@ -1,0 +1,10 @@
+<<<<<<< HEAD
+﻿ @{
+    Layout = "_Layout";
+}
+ 
+=======
+﻿@{
+    Layout = "_Layout";
+}
+>>>>>>> e0f19f4cec0af7f0b3b71c23dfd0e56313957722

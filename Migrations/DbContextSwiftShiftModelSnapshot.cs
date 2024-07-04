@@ -35,8 +35,14 @@ namespace Bitirme.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AdvertNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CityId")
                         .HasColumnType("int");
@@ -44,6 +50,9 @@ namespace Bitirme.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ConfirmCode")
+                        .HasColumnType("int");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -60,6 +69,10 @@ namespace Bitirme.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Latitude")
                         .IsRequired()
@@ -83,6 +96,9 @@ namespace Bitirme.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<double>("PaidPrice")
+                        .HasColumnType("float");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -95,14 +111,17 @@ namespace Bitirme.Migrations
                     b.Property<decimal?>("Point")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ProfileDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("RatingCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RegisterDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -112,15 +131,29 @@ namespace Bitirme.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("TCKN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalRating")
+                        .HasColumnType("int");
+
                     b.Property<string>("TransportNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<string>("UserIBAN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("isVerified")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -137,8 +170,6 @@ namespace Bitirme.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -164,6 +195,56 @@ namespace Bitirme.Migrations
                     b.HasIndex("CountryId");
 
                     b.ToTable("Cities");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.Comment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ReceiverUserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderUserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("When")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("senderNameSurname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("senderProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("CommentId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Bitirme.Models.Country", b =>
@@ -215,6 +296,15 @@ namespace Bitirme.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsOfferMessage")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ReceiverUserID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -235,14 +325,86 @@ namespace Bitirme.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TravelId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("When")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("chatId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("isTransporter")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SenderUserID");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.MessageInfo", b =>
+                {
+                    b.Property<int>("chatId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("chatId"));
+
+                    b.Property<string>("customerUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("isCompleted")
+                        .HasColumnType("int");
+
+                    b.Property<int>("isPaid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("productId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("transportUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("travelId")
+                        .HasColumnType("int");
+
+                    b.HasKey("chatId");
+
+                    b.ToTable("MessageInfo");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.MoneyTransaction", b =>
+                {
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IBAN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("isPaid")
+                        .HasColumnType("int");
+
+                    b.HasKey("TransactionId");
+
+                    b.ToTable("MoneyTransaction");
                 });
 
             modelBuilder.Entity("Bitirme.Models.Product", b =>
@@ -255,35 +417,189 @@ namespace Bitirme.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CityId")
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("FromCityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CountryId")
+                    b.Property<int>("FromCountryId")
                         .HasColumnType("int");
+
+                    b.Property<int>("FromDistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("ProductImage")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("ProductKg")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductName")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductNote")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ToCityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToCountryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToDistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransporterUserId")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("WhenDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("isCommentMade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("isDelivered")
+                        .HasColumnType("int");
+
+                    b.Property<int>("isOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("path")
+                        .HasColumnType("int");
 
                     b.HasKey("ProductId");
 
+                    b.HasIndex("FromCityId");
+
+                    b.HasIndex("FromCountryId");
+
+                    b.HasIndex("FromDistrictId");
+
+                    b.HasIndex("ToCityId");
+
+                    b.HasIndex("ToCountryId");
+
+                    b.HasIndex("ToDistrictId");
+
                     b.ToTable("tbl_products");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.Travel", b =>
+                {
+                    b.Property<int>("TravelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TravelId"));
+
+                    b.Property<int>("ArrivalCityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArrivalCountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ArrivalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ArrivalDistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartureCityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartureCountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DepartureDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartureDistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxWeightCarry")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("carrySensitiveProduct")
+                        .HasColumnType("int");
+
+                    b.Property<int>("isActiveCarrier")
+                        .HasColumnType("int");
+
+                    b.Property<double>("pricePerKg")
+                        .HasColumnType("float");
+
+                    b.Property<int>("seeProduct")
+                        .HasColumnType("int");
+
+                    b.HasKey("TravelId");
+
+                    b.HasIndex("ArrivalCityId");
+
+                    b.HasIndex("ArrivalCountryId");
+
+                    b.HasIndex("ArrivalDistrictId");
+
+                    b.HasIndex("DepartureCityId");
+
+                    b.HasIndex("DepartureCountryId");
+
+                    b.HasIndex("DepartureDistrictId");
+
+                    b.ToTable("Travel");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.UserReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReviewedUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReviewerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserReview");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -443,17 +759,11 @@ namespace Bitirme.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bitirme.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
-
                     b.Navigation("City");
 
                     b.Navigation("Country");
 
                     b.Navigation("District");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Bitirme.Models.City", b =>
@@ -487,6 +797,119 @@ namespace Bitirme.Migrations
                         .IsRequired();
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.Product", b =>
+                {
+                    b.HasOne("Bitirme.Models.City", "FromCity")
+                        .WithMany()
+                        .HasForeignKey("FromCityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.Country", "FromCountry")
+                        .WithMany()
+                        .HasForeignKey("FromCountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.District", "FromDistrict")
+                        .WithMany()
+                        .HasForeignKey("FromDistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.City", "ToCity")
+                        .WithMany()
+                        .HasForeignKey("ToCityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.Country", "ToCountry")
+                        .WithMany()
+                        .HasForeignKey("ToCountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.District", "ToDistrict")
+                        .WithMany()
+                        .HasForeignKey("ToDistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FromCity");
+
+                    b.Navigation("FromCountry");
+
+                    b.Navigation("FromDistrict");
+
+                    b.Navigation("ToCity");
+
+                    b.Navigation("ToCountry");
+
+                    b.Navigation("ToDistrict");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.Travel", b =>
+                {
+                    b.HasOne("Bitirme.Models.City", "ArrivalCity")
+                        .WithMany()
+                        .HasForeignKey("ArrivalCityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.Country", "ArrivalCountry")
+                        .WithMany()
+                        .HasForeignKey("ArrivalCountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.District", "ArrivalDistrict")
+                        .WithMany()
+                        .HasForeignKey("ArrivalDistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.City", "DepartureCity")
+                        .WithMany()
+                        .HasForeignKey("DepartureCityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.Country", "DepartureCountry")
+                        .WithMany()
+                        .HasForeignKey("DepartureCountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bitirme.Models.District", "DepartureDistrict")
+                        .WithMany()
+                        .HasForeignKey("DepartureDistrictId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArrivalCity");
+
+                    b.Navigation("ArrivalCountry");
+
+                    b.Navigation("ArrivalDistrict");
+
+                    b.Navigation("DepartureCity");
+
+                    b.Navigation("DepartureCountry");
+
+                    b.Navigation("DepartureDistrict");
+                });
+
+            modelBuilder.Entity("Bitirme.Models.UserReview", b =>
+                {
+                    b.HasOne("Bitirme.Areas.Identity.Data.ApplicationUser", "User")
+                        .WithMany("ReviewsReceived")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -543,6 +966,8 @@ namespace Bitirme.Migrations
             modelBuilder.Entity("Bitirme.Areas.Identity.Data.ApplicationUser", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("ReviewsReceived");
                 });
 #pragma warning restore 612, 618
         }

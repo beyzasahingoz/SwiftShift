@@ -1,12 +1,16 @@
 ﻿class Message
 {
-    constructor(senderUsername, receiverUsername, receiverUserId, text, when)
+    constructor(senderUsername, receiverUsername, receiverUserId, text, when, IsTransporter, ProductId, TravelId, ChatId)
     {
         this.senderUserName = senderUsername;
         this.receiverUserName = receiverUsername;
         this.receiverUserID = receiverUserId;
         this.text = text;
         this.when = when;
+        this.isTransporter = IsTransporter;
+        this.productId = ProductId;
+        this.travelId = TravelId;
+        this.chatId = ChatId;
     }
 }
 
@@ -14,6 +18,10 @@
 const senderUsername = senderUserName;
 const receiverUsername = receiverUserName;
 const receiverUserId = receiverUserID;
+const IsTransporter = isTransporter;
+const ProductId = productId;
+const TravelId = travelId;
+const ChatId = chatId;
 const textInput = document.getElementById('messageText');
 const whenInput = document.getElementById('when');
 const chat = document.getElementById('chat');
@@ -41,7 +49,7 @@ function sendMessage()
     if (text.trim() === "") return;
 
     let when = new Date();
-    let message = new Message(senderUsername, receiverUsername, receiverUserId, text);
+    let message = new Message(senderUsername, receiverUsername, receiverUserId, text, IsTransporter, ProductId, TravelId, ChatId);
     sendMessageToHub(message);
 }
 

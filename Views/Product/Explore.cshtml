@@ -1,0 +1,559 @@
+﻿@model CombinedExploreModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @{
+        ViewData["Title"] = "Explore";
+    }
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+    <style>
+        .modalcard {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        .card-input-element {
+            display: none;
+        }
+
+        .card-input {
+            margin: 10px;
+            padding: 0px;
+        }
+
+            .card-input:hover {
+                cursor: pointer;
+            }
+
+        .card-input-element:checked + .card-input {
+            box-shadow: 0 0 1px 1px #2ecc71;
+        }
+
+        .title {
+            color: grey;
+            font-size: 18px;
+        }
+
+        .rounded-circle.index {
+            height: 60px;
+            width: 60px;
+            margin-right: 100px;
+            margin-left: 100px;
+        }
+
+        .btn-get-contact {
+            text-align: center;
+            background-color: #4caf50;
+            color: white;
+            padding: 6px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button {
+            border: none;
+            outline: 0;
+            display: inline-block;
+            color: white;
+            background-color: #4CAF50;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 20px;
+            font-size: 16px;
+            padding: 5px 7px;
+            transition: background-color 0.3s;
+        }
+
+            button:hover {
+                background-color: honeydew;
+            }
+
+        .card-footer {
+            background-color: #4CAF50;
+            padding: 10px;
+        }
+
+
+        a {
+            text-decoration: none;
+            font-size: 22px;
+            color: black;
+        }
+
+            button:hover, a:hover {
+                opacity: 0.7;
+            }
+
+        .animated-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .productcard, .travelcard {
+            width: 24rem;
+            height: 36rem;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            color: $color-primary-white;
+            box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.2);
+            img
+
+        {
+            position: absolute;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0.9;
+            transition: opacity .2s ease-out;
+        }
+
+        h2 {
+            position: absolute;
+            inset: auto auto 30px 30px;
+            margin: 0;
+            transition: inset .3s .3s ease-out;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        p, .prdctBtn, .trvlBtn {
+            position: absolute;
+            opacity: 0;
+            max-width: 80%;
+            transition: opacity .3s ease-out;
+        }
+
+        p {
+            inset: auto auto 80px 30px;
+        }
+
+        .prdctBtn, .trvlBtn {
+            inset: auto auto 40px 30px;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        &:hover h2 {
+            inset: auto auto 360px 30px;
+            transition: inset .3s ease-out;
+        }
+
+        &:hover p, &:hover .prdctBtn, &:hover .trvlBtn {
+            opacity: 1;
+            transition: opacity .5s .1s ease-in;
+        }
+
+        &:hover img {
+            transition: opacity .3s ease-in;
+            opacity: 0.5;
+        }
+
+        .card-header {
+            background-color: whitesmoke;
+            padding: 10px;
+        }
+
+        .card-body {
+            padding: 10px;
+        }
+
+            .card-body p {
+                margin-bottom: 5px;
+            }
+    </style>
+    <script>
+
+        var selectedTravelId;
+        var productId;
+        var receiverId;
+
+        function formatDate(dateString)
+        {
+            var date = new Date(dateString);
+            var day = date.getDate().toString().padStart(2, '0');
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var year = date.getFullYear();
+            return day + '/' + month + '/' + year;
+        }
+
+        $(document).ready(function ()
+        {
+            $('#ModalTravel').on('show.bs.modal', function (e)
+            {
+                $.ajax({
+                    url: '@Url.Action("GetAllUserTravel", "Home")',
+                    type: 'GET',
+                    success: function (data)
+                    {
+                        $('#travelContainer').empty();
+                        if (data.length == 0)
+                        {
+                            $('#travelBtn').css('display', 'block');
+                        } else
+                        {
+                            $('#contactTravelBtn').css('display', 'block');
+                            for (var i = 0; i < data.length; i++)
+                            {
+                                var travel = data[i];
+                                $('#travelContainer').append(`
+                                                                                                                                                    <label>
+                                                                                                                                                                                                            <div class="col-md-6">
+
+                                                                                                                                                                                                              <input type="radio" id="${travel.travelId}" name="travel" class="card-input-element" />
+                                                                                                                                                                                                                <div class="modalcard card-default card-input">
+                                                                                                                                                                                                                    <div class="card-body">
+                                                                                                                                                                                                                        <p class="card-text"><strong>Kalkış Yeri:</strong> ${travel.departureDistrict.districtName}/${travel.departureCity.cityName}/${travel.departureCountry.countryName}</p>
+                                                                                                                                                                                                                        <p class="card-text"><strong>Varış Yeri:</strong> ${travel.arrivalDistrict.districtName}/${travel.arrivalCity.cityName}/${travel.arrivalCountry.countryName}</p>
+                                                                                                                                                                                                                        <p class="card-text"><strong>Kalkış Tarihi:</strong> ${formatDate(travel.departureDate)}</p>
+                                                                                                                                                                                                                        <p class="card-text"><strong>Varış Tarihi:</strong> ${formatDate(travel.arrivalDate)}</p>
+                                                                                                                                                                                                                        <p class="card-text"><strong>Taşınabilecek Maximum Kilogram:</strong> ${travel.maxWeightCarry}</p>
+                                                                                                                                                                                                                        <p class="card-text"><strong>Kilogram Başına Belirlenen Ücret:</strong> ${travel.pricePerKg}</p>
+                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                </div>
+
+                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                            </label>
+                                                                                                                                                                                                        `);
+                            }
+
+                            $('.card-input-element').click(function ()
+                            {
+                                selectedTravelId = $(this).attr('id');
+                            });
+                        }
+                    },
+                    error: function ()
+                    {
+                        console.error('Error fetching data');
+                    }
+                });
+            });
+        });
+
+
+        function TravelModal(productId, receiverId)
+        {
+            $.ajax({
+                url: '@Url.Action("GetCheckTravelChat", "Home")',
+                type: 'GET',
+                data: {
+                    receiverId: receiverId,
+                },
+                success: function (response)
+                {
+                    if (response == 1)
+                    {
+                        swal("Hata!", "Yeni Bir İletişim Kuramazsınız.!", "error", {
+                            button: "Tamam",
+                            timer: 5000
+                        });
+                        return;
+                    }
+                    else
+                    {
+                        $('#hiddenProductId').val(productId);
+                        $('#hiddenReceiverId').val(receiverId);
+
+                        $('#ModalTravel').modal('show');
+                    }
+                },
+                error: function (response)
+                {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function openContactTravelPage()
+        {
+            debugger;
+            productId = $('#hiddenProductId').val();
+            receiverId = $('#hiddenReceiverId').val();
+
+            if (selectedTravelId)
+            {
+                var url = '@Url.Action("AddMessageInfo", "Home")?customerUserId=' + receiverId + '&productId=' + productId + '&travelId=' + selectedTravelId;
+                window.location.href = url;
+            }
+            else
+            {
+                swal("Hata!", "Seyahat Seçmeden İletişime Geçemezsiniz!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+            }
+        }
+    </script>
+    <script>
+        var selectedProductId;
+
+        function formatDate(dateString)
+        {
+            var date = new Date(dateString);
+            var day = date.getDate().toString().padStart(2, '0');
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var year = date.getFullYear();
+            return day + '/' + month + '/' + year;
+        }
+
+        $(document).ready(function ()
+        {
+            $('#ModalProduct').on('show.bs.modal', function (e)
+            {
+                $.ajax({
+                    url: '@Url.Action("GetAllUserProduct", "Home")',
+                    type: 'GET',
+                    success: function (data)
+                    {
+                        $('#productContainer').empty();
+                        if (data.length == 0)
+                        {
+                            $('#advertBtn').css('display', 'block');
+                        } else
+                        {
+                            $('#contactBtn').css('display', 'block');
+                            for (var i = 0; i < data.length; i++)
+                            {
+                                var product = data[i];
+                                $('#productContainer').append(`
+                                                                                                                                                                                                                                                                                                <label>
+                                                                                                                                                                                                                                                                        <div class="col-md-6">
+
+                                                                                                                                                                                                                                                                                                     <input type="radio" id="${product.productId}" name="product" class="card-input-element" />
+                                                                                                                                                                                                                                                                                               <div class="modalcard card-default card-input">
+                                                                                                                                                                                                                                                                         <img src="~/images/profilePicture.png" alt="Product Image" style="text-align:center; cursor:pointer" class="img-fluid product-image" data-toggle="modal" data-target="#exampleModal" />
+                                                                                                                                                                                                                                                                                       <div class="card-body">
+                                                                                                                                                                                                                                                                                                                                                                        <p class="card-text"><strong>Ürün İsmi:</strong> ${product.productName} </p>
+                                                                                                                                                                                                                                                                                                                                                                        <p class="card-text"><strong>Kilogram:</strong> ${product.productKg}</p>
+                                                                                                                                                                                                                                                                                                                                                                        <p class="card-text"><strong>Ürünün Bulunduğu Yer:</strong> ${product.fromDistrict.districtName}/${product.fromCity.cityName}/${product.fromCountry.countryName}</p>
+                                                                                                                                                                                                                                                                                                                                                                        <p class="card-text"><strong>Ürünün Gideceği Yer:</strong> ${product.toDistrict.districtName}/${product.toCity.cityName}/${product.toCountry.countryName}</p>
+                                                                                                                                                                                                                                                                                                                                                                        <p class="card-text"><strong>Adres:</strong> ${product.address}</p>
+                                                                                                                                                                                                                                                                                                                                                                        <p class="card-text"><strong>Gideceği Tarih:</strong> ${formatDate(product.whenDate)}</p>
+                                                                                                                                                                                                                                                                                                                                                                        <p class="card-text"><strong>Not:</strong> ${product.productNote}</p>
+                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                </div>
+
+                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                            </label>
+                                                                                                                                                                                                                                                                                                                                                        `);
+                            }
+                            $('.card-input-element').click(function ()
+                            {
+                                selectedProductId = $(this).attr('id');
+                            });
+                        }
+                    },
+                    error: function ()
+                    {
+                        console.error('Error fetching data');
+                    }
+                });
+            });
+        });
+
+        function ProductModal(travelId,receiverId)
+        {
+            $.ajax({
+                url: '@Url.Action("GetCheckProductChat", "Home")',
+                type: 'GET',
+                data: {
+                    receiverId: receiverId,
+                },
+                success: function (response)
+                {
+                    if (response == 1)
+                    {
+                        swal("Hata!", "Yeni Bir İletişim Kuramazsınız.!", "error", {
+                            button: "Tamam",
+                            timer: 5000
+                        });
+                        return;
+                    } else
+                    {
+                        $('#hiddenTravelId').val(travelId);
+                        $('#hiddenTravelReceiverId').val(receiverId);
+
+                        $('#ModalProduct').modal('show');
+                    }
+                },
+                error: function (response)
+                {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function openContactPage()
+        {
+            travelId = $('#hiddenTravelId').val();
+            receiverId = $('#hiddenTravelReceiverId').val();
+
+            if (selectedProductId)
+            {
+                var url = '@Url.Action("AddMessageInfo", "Home")?transportUserId=' + receiverId + '&productId=' + selectedProductId + '&travelId=' + travelId;
+                window.location.href = url;
+            }
+            else
+            {
+                swal("Hata!", "Ürün Seçmeden İletişime Geçemezsiniz!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="products-tab" data-toggle="tab" href="#products" role="tab" aria-controls="products" aria-selected="true">Ürünler</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="travels-tab" data-toggle="tab" href="#travels" role="tab" aria-controls="travels" aria-selected="false">Seyahatler</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="products" role="tabpanel" aria-labelledby="products-tab">
+                <div class="row mt-3">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="animated-card col-md-4">
+                            <div class="productcard">
+                                @if (product.ProductImage != null)
+                                {
+                                    <img src="data:image/*;base64,@(Convert.ToBase64String(product.ProductImage))" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/delivery.jpg" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                                }
+                                <div class="card-content">
+                                    <h2>
+                                        @product.ProductName
+                                    </h2>
+                                    <p class="card-text">
+                                        <strong>Kilogram:</strong> @product.ProductKg <br />
+                                        <strong>Ürünün Bulunduğu Yer:</strong> @product.FromDistrict.DistrictName/ @product.FromCity.CityName/ @product.FromCountry.CountryName <br />
+                                        <strong>Ürünün Gideceği Yer:</strong> @product.ToDistrict.DistrictName/ @product.ToCity.CityName/ @product.ToCountry.CountryName <br />
+                                        <strong>Adres:</strong> @product.Address <br />
+                                        <strong>Gideceği Tarih:</strong> @product.WhenDate.ToString("dd/MM/yyyy") <br />
+                                        <strong>Not:</strong> @product.ProductNote
+                                    </p>
+                                    <button class="prdctBtn" type="button" onclick="TravelModal('@product.ProductId', '@product.UserId')">İletişim Kur</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="travels" role="tabpanel" aria-labelledby="travels-tab">
+                <div class="row mt-3">
+
+                    @foreach (var travel in Model.Travels)
+                    {
+                        <div class="animated-card col-md-4">
+                            <div class="travelcard">
+                                <img src="~/images/travel.jpg" alt="Travel Image" />
+                                <div class="card-content">
+                                    <h2>
+                                        SEYAHAT DETAYLARI
+                                    </h2>
+                                    <p class="card-text">
+                                        <strong>Kalkış Yeri:</strong> @travel.DepartureDistrict.DistrictName / @travel.DepartureCity.CityName / @travel.DepartureCountry.CountryName <br />
+                                        <strong>Gideceği Yer:</strong> @travel.ArrivalDistrict.DistrictName / @travel.ArrivalCity.CityName / @travel.ArrivalCountry.CountryName <br />
+                                        <strong>Kalkış Tarihi:</strong> @travel.DepartureDate <br />
+                                        <strong>Varış Tarihi:</strong> @travel.ArrivalDate <br />
+                                        <strong>Taşınabilecek Maximum Kilogram:</strong> @travel.MaxWeightCarry <br />
+                                        <strong>Kilogram Başına Belirlenen Ücret:</strong> @travel.pricePerKg <br />
+                                        <strong>Ürünü Görmek İstiyorum: </strong> <input type="checkbox" @(travel.seeProduct == 1 ? "checked" : "") disabled /> <br />
+                                        <strong>Hassas Ürün Taşır: </strong> <input type="checkbox" @(travel.carrySensitiveProduct == 1 ? "checked" : "") disabled />
+                                    </p>
+                                    <button class="trvlBtn" type="button" onclick="ProductModal('@travel.TravelId', '@travel.UserId')">İletişim Kur</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ModalTravel" tabindex="-1" aria-labelledby="ModalTravelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hangi Seyahatiniz İçin İletişime Girceksiniz</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="hiddenProductId" value="" />
+                    <input type="hidden" id="hiddenReceiverId" value="" />
+                    <div id="travelContainer"></div>
+                    <button id="contactTravelBtn" onclick="openContactTravelPage()" style="display: none">İletişim Kur</button>
+                    <div id="travelBtn" class="get-contact" style="display: none">
+                        <a class="btn-get-contact" asp-controller="Travel" asp-action="AddTravel">Seyahat Ekle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ürün Resmi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img src="~/images/profilePicture.png" alt="Product Image" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ModalProduct" tabindex="-1" aria-labelledby="ModalProductLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hangi Ürününüz İçin İletişime Geçeceksiniz?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="hiddenTravelId" value="" />
+                    <input type="hidden" id="hiddenTravelReceiverId" value="" />
+                    <div id="productContainer"></div>
+                    <button id="contactBtn" onclick="openContactPage()" style="display: none">İletişim Kur</button>
+                    <div id="advertBtn" class="get-contact" style="display: none">
+                        <a class="btn-get-contact" asp-controller="Product" asp-action="Advert">Ürün Ekle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

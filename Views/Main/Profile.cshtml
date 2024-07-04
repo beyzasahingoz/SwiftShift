@@ -1,193 +1,903 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Bitirme.Areas.Identity.Data
-
+@model IEnumerable<Bitirme.Models.Comment>
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@{
+    var userName = ViewBag.UserName;
+    var city = ViewBag.City;
+    var country = ViewBag.Country;
+    var profileDescription = ViewBag.ProfileDescription;
+    var transportNumber = ViewBag.TransportNumber;
+    var advertNumber = ViewBag.AdvertNumber;
+    var deliverNumber = ViewBag.DeliverNumber;
+    var isCurrUser = ViewBag.IsCurrUser;
+    var profilePicture = ViewBag.ProfilePicture;
+}
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profile</title>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+<style>
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .profile-page {
+        display: flex;
+        min-height: 100vh;
+        padding-top: 2rem;
+        font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        color: rgba(0,0,0,0.6);
+    }
+
+        .profile-page .content {
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .cover-photo {
-            background-color: #6B705C;
-            height: 350px;
+            max-width: 800px;
             width: 100%;
+            position: relative;
+            z-index: 2;
+            margin: auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 2rem;
+            box-shadow: 0 15px 35px rgba(50,50,93,0.1), 0 5px 15px rgba(0,0,0,0.07);
         }
 
-        .circle {
+        .profile-page .content__cover {
+            position: relative;
+        }
+
+    .theme-orange .profile-page .content__cover {
+        background: linear-gradient(150deg, #ff4086 20%, #fd8d76 100%);
+    }
+
+    .theme-purple .profile-page .content__cover {
+        background: linear-gradient(150deg, #8700ff 20%, #f000ff 100%);
+    }
+
+    .theme-green .profile-page .content__cover {
+        background: linear-gradient(150deg, #1dcc45 20%, #42b883 100%);
+    }
+
+    .theme-blue .profile-page .content__cover {
+    }
+
+    .profile-page .content__bull {
+        display: none;
+        height: 12rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .profile-page .content__bull span:nth-child(1) {
+            display: block;
             position: absolute;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        .profile-page .content__bull span:nth-child(2) {
+            display: block;
+            position: absolute;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        .profile-page .content__bull span:nth-child(3) {
+            display: block;
+            position: absolute;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        .profile-page .content__bull span:nth-child(4) {
+            display: block;
+            position: absolute;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        .profile-page .content__bull span:nth-child(5) {
+            display: block;
+            position: absolute;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        .profile-page .content__bull span:nth-child(1) {
+            width: 5rem;
+            height: 5rem;
+            top: -6%;
+            left: -3%;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .profile-page .content__bull span:nth-child(2) {
+            width: 8rem;
+            height: 8rem;
+            top: 18%;
+            left: 18%;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .profile-page .content__bull span:nth-child(3) {
+            width: 3rem;
+            height: 3rem;
+            top: 8%;
+            right: 2%;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .profile-page .content__bull span:nth-child(4) {
+            width: 6rem;
+            height: 6rem;
+            top: 28%;
+            right: 12%;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .profile-page .content__bull span:nth-child(5) {
+            width: 4rem;
+            height: 4rem;
             top: 70%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150px;
-            height: 150px;
-            clip-path: circle(50% at 50% 50%);
+            left: -6%;
+            background: rgba(255,255,255,0.04);
+        }
+
+    .profile-page .content__avatar {
+        width: 12rem;
+        height: 12rem;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        z-index: 2;
+        transform: translate(-50%, 50%);
+        background: #8f6ed5 url("https://image.freepik.com/free-photo/friendly-brunette-looking-camera_23-2147774849.jpg") center center no-repeat;
+        background-size: cover;
+        border-radius: 50%;
+        box-shadow: 0 15px 35px rgba(50,50,93,0.1), 0 5px 15px rgba(0,0,0,0.07);
+    }
+
+        .profile-page .content__avatar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-radius: 50%;
+        }
+
+    .profile-page .content__actions {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.2rem;
+    }
+
+        .profile-page .content__actions a {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
+            height: 3rem;
+            padding: 0.2rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+            .profile-page .content__actions a svg {
+                width: 2rem;
+                margin-right: 0.4rem;
+            }
+
+                .profile-page .content__actions a svg path:last-child {
+                    opacity: 0.5;
+                }
+
+            .profile-page .content__actions a:first-child {
+                color: #ff4086;
+            }
+
+    .theme-orange .profile-page .content__actions a:first-child {
+        color: #ff4086;
+    }
+
+    .theme-purple .profile-page .content__actions a:first-child {
+        color: #8700ff;
+    }
+
+    .theme-green .profile-page .content__actions a:first-child {
+        color: #1dcc45;
+    }
+
+    .theme-blue .profile-page .content__actions a:first-child {
+    }
+
+    .profile-page .content__actions a:last-child {
+        color: #4caf50;
+    }
+
+    .profile-page .content__actions a:hover:first-child {
+        background: #1d8cf8;
+        color: #fff;
+    }
+
+    .theme-orange .profile-page .content__actions a:hover:first-child {
+        background: #ff4086;
+    }
+
+    .theme-purple .profile-page .content__actions a:hover:first-child {
+        background: #8700ff;
+    }
+
+    .theme-green .profile-page .content__actions a:hover:first-child {
+        background: #1dcc45;
+    }
+
+    .theme-blue .profile-page .content__actions a:hover:first-child {
+        background: #0098f0;
+    }
+
+    .profile-page .content__actions a:hover:last-child {
+        background: #1d8cf8;
+        color: #fff;
+    }
+
+    .theme-orange .profile-page .content__actions a:hover:last-child {
+        background: #fd8d76;
+    }
+
+    .theme-purple .profile-page .content__actions a:hover:last-child {
+        background: #f000ff;
+    }
+
+    .theme-green .profile-page .content__actions a:hover:last-child {
+        background: #42b883;
+    }
+
+    .theme-blue .profile-page .content__actions a:hover:last-child {
+        background: #00f2c3;
+    }
+
+    .profile-page .content__title {
+        margin-top: 4.5rem;
+        text-align: center;
+        order: 1;
+    }
+
+        .profile-page .content__title h1 {
+            margin-bottom: 0.1rem;
+            font-size: 2.4rem;
+        }
+
+        .profile-page .content__title span {
+            font-size: 1rem;
+        }
+
+    .profile-page .content__description {
+        margin-top: 2.5rem;
+        text-align: center;
+        order: 2;
+    }
+
+        .profile-page .content__description p {
+            margin-bottom: 0.2rem;
+            font-size: 1.2rem;
+        }
+
+    .profile-page .content__list {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+        list-style-type: none;
+        order: 3;
+    }
+
+        .profile-page .content__list li {
+            padding: 0 1.5rem;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+            .profile-page .content__list li span {
+                display: block;
+                margin-bottom: 0.1rem;
+                font-weight: bold;
+                font-size: 1.6rem;
+            }
+
+    .profile-page .content__button {
+        margin: 3rem 0 2rem;
+        text-align: center;
+        order: 4;
+    }
+
+        .profile-page .content__button .button {
+            display: inline-block;
+            padding: 1.2rem 1.8rem;
+            text-align: center;
+            text-decoration: none;
+            background: linear-gradient(100deg, #1d8cf8 30%, #3358f4 100%);
+            border-radius: 2rem;
+            box-shadow: 0 4px 6px rgba(50,50,93,0.11), 0 1px 3px rgba(0,0,0,0.08);
+            font-size: 1rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+    .theme-orange .profile-page .content__button .button {
+        background: linear-gradient(100deg, #ff4086 10%, #fd8d76 100%);
+    }
+
+    .theme-purple .profile-page .content__button .button {
+        background: linear-gradient(100deg, #8700ff 10%, #f000ff 100%);
+    }
+
+    .theme-green .profile-page .content__button .button {
+        background: linear-gradient(100deg, #1dcc45 10%, #42b883 100%);
+    }
+
+    .theme-blue .profile-page .content__button .button {
+        background: linear-gradient(100deg, #0098f0 10%, #00f2c3 100%);
+    }
+
+    .profile-page .content__button .button:hover {
+        color: #fff;
+    }
+
+    .rounded-profile-pic {
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .profile-page .bg {
+        width: 100%;
+        height: 50%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+        .profile-page .bg div {
+            content: "";
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
             overflow: hidden;
         }
 
-        .form-group {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 150px; /* Same as circle width */
-            height: 150px; /* Same as circle height */
+    .theme-orange .profile-page .bg div {
+        background: linear-gradient(150deg, #ff4086 20%, #fd8d76 100%);
+    }
+
+    .theme-purple .profile-page .bg div {
+        background: linear-gradient(150deg, #8700ff 20%, #f000ff 100%);
+    }
+
+    .theme-green .profile-page .bg div {
+        background: linear-gradient(150deg, #1dcc45 20%, #42b883 100%);
+    }
+
+    .theme-blue .profile-page .bg div {
+    }
+
+    .profile-page .bg span:nth-child(1) {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        border-radius: 50%;
+        animation: floating 34s infinite;
+    }
+
+    .profile-page .bg span:nth-child(2) {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        border-radius: 50%;
+        animation: floating 34s infinite;
+    }
+
+    .profile-page .bg span:nth-child(3) {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        border-radius: 50%;
+        animation: floating 34s infinite;
+    }
+
+    .profile-page .bg span:nth-child(4) {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        border-radius: 50%;
+        animation: floating 34s infinite;
+    }
+
+    .profile-page .bg span:nth-child(5) {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        border-radius: 50%;
+        animation: floating 34s infinite;
+    }
+
+    .profile-page .bg span:nth-child(6) {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        border-radius: 50%;
+        animation: floating 34s infinite;
+    }
+
+    .profile-page .bg span:nth-child(7) {
+        display: block;
+        position: absolute;
+        z-index: 2;
+        border-radius: 50%;
+        animation: floating 34s infinite;
+    }
+
+    .profile-page .bg span:nth-child(1) {
+        width: 11rem;
+        height: 11rem;
+        top: 30%;
+        left: 16%;
+        background: rgba(255,255,255,0.05);
+        animation-duration: 34s;
+    }
+
+    .profile-page .bg span:nth-child(2) {
+        width: 8rem;
+        height: 8rem;
+        top: 18%;
+        left: 1%;
+        background: rgba(255,255,255,0.12);
+        animation-duration: 40s;
+    }
+
+    .profile-page .bg span:nth-child(3) {
+        width: 8rem;
+        height: 8rem;
+        top: 34%;
+        right: 10%;
+        background: rgba(255,255,255,0.1);
+        animation-duration: 38s;
+    }
+
+    .profile-page .bg span:nth-child(4) {
+        width: 4rem;
+        height: 4rem;
+        top: 34%;
+        right: 3%;
+        background: rgba(255,255,255,0.2);
+        animation-duration: 34s;
+    }
+
+    .profile-page .bg span:nth-child(5) {
+        width: 12rem;
+        height: 12rem;
+        top: 42%;
+        right: 28%;
+        background: rgba(255,255,255,0.1);
+        animation-duration: 40s;
+    }
+
+    .profile-page .bg span:nth-child(6) {
+        width: 8rem;
+        height: 8rem;
+        top: 72%;
+        left: 6%;
+        background: rgba(255,255,255,0.05);
+        animation-duration: 38s;
+    }
+
+    .profile-page .bg span:nth-child(7) {
+        width: 4rem;
+        height: 4rem;
+        top: 82%;
+        right: 8%;
+        background: rgba(255,255,255,0.05);
+        animation-duration: 34s;
+    }
+
+    .theme-switcher-button {
+        position: fixed;
+        top: calc(50% - 3.6rem);
+        right: 0;
+        z-index: 2;
+        padding: 1rem;
+        background: rgba(0,0,0,0.6);
+        border-top-left-radius: 1rem;
+        border-bottom-left-radius: 1rem;
+        font-size: inherit;
+        color: #fd7686;
+        cursor: pointer;
+    }
+
+    .theme-orange .theme-switcher-button {
+        color: #fd7686;
+    }
+
+    .theme-purple .theme-switcher-button {
+        color: #80f;
+    }
+
+    .theme-green .theme-switcher-button {
+        color: #42b883;
+    }
+
+    .theme-blue .theme-switcher-button {
+        color: #1d8cf8;
+    }
+
+    .theme-switcher-button svg {
+        width: 1.1rem;
+    }
+
+    .theme-switcher-wrapper {
+        width: 200px;
+        position: fixed;
+        top: calc(50% - 5rem);
+        right: 5rem;
+        z-index: 2;
+        padding: 1.5rem 0;
+        background: linear-gradient(#222a42, #1d253b);
+        box-shadow: 0 10px 50px 0 rgba(0,0,0,0.2);
+        border-radius: 0.25rem;
+        opacity: 0;
+        text-align: center;
+        font-size: 1rem;
+        color: inherit;
+        visibility: hidden;
+        transform: translateY(-15%) translateZ(0);
+        transform-origin: 0 0;
+        transition: transform 0.15s cubic-bezier(0.43, 0.195, 0.02, 1);
+    }
+
+        .theme-switcher-wrapper.is-open {
+            opacity: 1;
+            visibility: visible;
+            transform: translate3d(0, 1px, 0);
         }
 
-        #profilePicture {
-            height: 100%;
-            object-fit: cover;
+        .theme-switcher-wrapper span {
+            display: block;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.9);
+            cursor: default;
         }
 
-        .form-group img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* This property makes the image cover the entire container while maintaining its aspect ratio */
-            border-radius: 50%; /* Ensure the image also has a circular border */
+        .theme-switcher-wrapper ul {
+            margin-top: 0.8rem;
+            list-style-type: none;
+            font-size: 0;
         }
 
-        .user-info,
-        .point,
-        .description {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
+        .theme-switcher-wrapper li {
+            display: inline-block;
+            vertical-align: middle;
+            padding: 0 0.2rem;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.9);
+            cursor: pointer;
         }
 
-        .user-info {
-            top: 82%;
-            font-size: 1.5em; /* Adjust the font size as needed */
-        }
-
-        .point {
-            top: 80%;
-            font-size: 1em; /* Adjust the font size as needed */
-        }
-
-        .description {
-            top: 140%;
-            font-size: 0.7em; /* Adjust the font size as needed */
-        }
-
-        .info {
-            top: 100%;
-            left: 50%;
-            position: absolute;
-            transform: translateX(-50%);
-            text-align: center;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #btnMsg {
-            top: 110%;
-            text-align: center;
-            left: 50%;
-            position: absolute;
-            transform: translateX(-50%);
-        }
-
-        .reviews-container {
-            top: 120%;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px; /* Kartlar arasındaki boşluğu ayarlar */
-        }
-
-        .card-comment {
-            top: 120%;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px; /* Kart genişliği */
-            height: 200px; /* Kart yüksekliği */
-            border: 1px solid #ddd; /* Kart sınırlarını ekler */
-            border-radius: 8px; /* Kart kenar yuvarlama */
-            overflow: hidden; /* İçeriğin kart sınırlarını aşmasını önler */
-        }
-
-        th, td {
-            flex: 1;
-            padding: 8px;
-            text-align: center;
-        }
-
-            th:nth-child(1),
-            td:nth-child(1),
-            th:nth-child(2),
-            td:nth-child(2) {
-                border-right: 1px solid black;
+            .theme-switcher-wrapper li em {
+                display: block;
+                border-radius: 1rem;
             }
 
-            th:nth-child(2),
-            td:nth-child(2) {
-                border-right: 1px solid black;
-            }
+        .theme-switcher-wrapper [data-theme] {
+            width: 20px;
+            height: 20px;
+        }
 
-    </style>
-</head>
+        .theme-switcher-wrapper [data-theme="orange"] {
+            background: #ff4086;
+        }
+
+        .theme-switcher-wrapper [data-theme="purple"] {
+            background: #80f;
+        }
+
+        .theme-switcher-wrapper [data-theme="green"] {
+            background: #42b883;
+        }
+
+        .theme-switcher-wrapper [data-theme="blue"] {
+            background: #1d8cf8;
+        }
+
+    .content__comments {
+        margin-top: 1rem;
+    }
+
+    .comment-list {
+        list-style-type: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-gap: 20px;
+    }
+
+    .comment {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .comment:hover {
+            background-color: honeydew;
+        }
+
+    .comment__avatar {
+        width: 40px;
+        height: 40px;
+        background-color: #ccc;
+        border-radius: 50%;
+        margin-right: 1rem;
+    }
+
+    .comment__content {
+        flex: 1;
+    }
+
+    .comment__author {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .comment__text {
+        color: #666;
+    }
+
+    /*  .rating-box {
+                    top: 7px;
+                    position: relative;
+                    background: whitesmoke;
+                    padding: 25px 100px 35px;
+                    border-radius: 25px;
+                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+                }
+
+                .stars {
+                    display: flex;
+                    align-items: center;
+                    gap: 25px;
+                }
+
+                    .stars input {
+                        display: none;
+                    }
+
+                    .stars label {
+                        color: #honeydew;
+                        font-size: 35px;
+                        cursor: pointer;
+                        transition: color 0.2s ease;
+                    }
+
+                        .stars label.active {
+                            color: #ff9c1a;
+                        } */
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+<script>
+
+    function openWallet() {
+        document.getElementById("openTransferFormBtn").style.display = "block";
+        document.getElementById("transferForm").style.display = "none";
+        $('#walletModal').modal('show');
+    }
+
+    function TransferPaid() {
+        var expr = /TR[a-zA-Z0-9]{2}\s?([0-9]{4}\s?){1}([0-9]{1})([a-zA-Z0-9]{3}\s?)([a-zA-Z0-9]{4}\s?){3}([a-zA-Z0-9]{2})\s?/;
+
+        var iban = document.getElementById("iban").value;
+        var transferPaid = parseFloat(document.getElementById("transferPaid").value);
+        var userPaidPrice = parseFloat('@UserManager.GetUserAsync(User).Result.PaidPrice');
+
+        if (!expr.test(iban)) {
+            document.getElementById("openTransferFormBtn").style.display = "none";
+            document.getElementById("transferForm").style.display = "block";
+            $('#walletModal').modal('show');
+
+            swal("Hata!", "Geçerli Bir IBAN Numarası Giriniz!", "error", {
+                button: "Tamam",
+                timer: 5000
+            });
+            return;
+        }
+
+        if (transferPaid > userPaidPrice || !transferPaid) {
+            document.getElementById("openTransferFormBtn").style.display = "none";
+            document.getElementById("transferForm").style.display = "block";
+            $('#walletModal').modal('show');
+
+            swal("Hata!", "Yetersiz Bakiye!", "error", {
+                button: "Tamam",
+                timer: 5000
+            });
+            return;
+        }
+
+        $.ajax({
+            url: '/Main/TransferPaid',
+            type: 'POST',
+            data: JSON.stringify({ "transferPaid": transferPaid, "iban": iban }),
+            contentType: 'application/json',
+            dataType: "json",
+            success: function(response) {
+                $('#walletModal').modal('hide');
+                swal({
+                    title: "İşlem Başarılı",
+                    text: "2 - 3 iş günü içerisinde paranız hesabınıza yatıralacaktır!",
+                    type: "success",
+                    button: true
+                }).then(function() {
+                    location.reload(true);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error adding comment:', error);
+            }
+        });
+    }
+</script>
 <body>
-    <header class="w3-display-container w3-wide">
-        <div class="w3-row w3-padding w3-border">
-            <div class="cover-photo">
-                <div class="circle">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
-                        {
-                            <img class="rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(UserManager.GetUserAsync(User).Result.ProfilePicture))">
-                        }
-                        else
-                        {
-                            <img class="rounded-circle" src="~/images/profilePicture.png">
-                        }
+    <div class="profile-page">
+        <div class="content">
+            <div class="content__cover">
+                <div class="content__avatar" style="background-image: url('data:image/jpeg;base64,@Convert.ToBase64String(profilePicture)')"></div>
+            </div>
+            <div class="content__actions">
+                @if (isCurrUser == 1)
+                {
+                    <a class="btn-get-contact" href="#" onclick="openWallet()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wallet2" viewBox="0 0 16 16">
+                            <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z" />
+                        </svg><span>Cüzdan</span>
+                    </a>
+                }
+            </div>
+            <div class="content__title">
+                <h1>@userName</h1><span>@city @country</span>
+            </div>
+            <div class="content__description">
+                <p>@profileDescription</p>
+            </div>
+            <ul class="content__list">
+                <li><span>@transportNumber</span>Aktif Taşınanlar</li>
+                <li><span>@advertNumber</span>İlan Sayısı</li>
+                <li><span>@deliverNumber</span>Teslim Edilenler</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="walletModal" class="modal fade" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bakiyem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <span id="userPaidPrice" style="font-weight: bold; font-size: 25px;">
+                            @UserManager.GetUserAsync(User).Result.PaidPrice ₺
+                        </span>
+                    </div>
+                    <div class="transferForm" id="transferForm" style="display:none">
+                        <form>
+                            <div class="form-group">
+                                <label for="iban">IBAN</label>
+                                <input type="text" class="form-control" id="iban" placeholder="IBAN Giriniz...">
+                            </div>
+                            <div class="form-group">
+                                <label for="transferPaid">Çekilmek İstenen Tutar</label>
+                                <input type="number" class="form-control" id="transferPaid" placeholder="Tutar Giriniz...">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="TransferPaid()">Çek</button>
+                        </form>
                     </div>
                 </div>
-            </div>
-            <div class="user-info">
-                <h1>@(UserManager.GetUserAsync(User).Result.Ad) @(UserManager.GetUserAsync(User).Result.Soyad)</h1>
-                <h1 class="point">@(UserManager.GetUserAsync(User).Result.Point == null ? 0 : UserManager.GetUserAsync(User).Result.Point)/ 10</h1>
-                <h1 class="description">@(UserManager.GetUserAsync(User).Result.ProfileDescription)</h1>
-            </div>
-            <table class="info">
-                <th>@(UserManager.GetUserAsync(User).Result.TransportNumber)</th>
-                <th>@(UserManager.GetUserAsync(User).Result.AdvertNumber)</th>
-                <th>@(UserManager.GetUserAsync(User).Result.DeliverNumber)</th>
-                <tr>
-                    <td>Taşıma Sayısı</td>
-                    <td>İlan Sayısı</td>
-                    <td>Teslim Edilecekler</td>
-                </tr>
-            </table>
-            <a id="btnMsg" class="btn btn-primary mt-3" asp-controller="Main" asp-action="Message">Mesaj</a>
-            <div class="reviews-container">
-                <div class="card-comment">
-                    <div class="card-header">
-                        <h5 class="card-title">Title</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">By: UserName</p>
-                        <p class="card-text">Rating: Rating stars</p>
-                        <p class="card-text">Date </p>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="openTransferFormBtn">Aktar</button>
                 </div>
             </div>
         </div>
-    </header>
+    </div>
+
+    <script>
+
+        var ibanFromDatabase = "@UserManager.GetUserAsync(User).Result.UserIBAN";
+        var ibanInput = document.getElementById("iban");
+
+        if (ibanFromDatabase && ibanFromDatabase.trim() !== "") {
+            var cleanedIBAN = ibanFromDatabase.replace(/&#xA0;/g, " ").trim();
+            ibanInput.value = cleanedIBAN;
+        }
+        else {
+            ibanInput.value = "";
+        }
+
+        var transferBtn = document.getElementById("openTransferFormBtn");
+        var transferForm = document.getElementById("transferForm");
+
+        transferBtn.onclick = function() {
+            transferForm.style.display = "block";
+            transferBtn.style.display = "none";
+        }
+    </script>
+
+    <div class="content__comments">
+        <ul class="comment-list">
+            @foreach (var comment in Model)
+            {
+                <li class="comment">
+                    <div class="comment__avatar">
+                        <img class="rounded-profile-pic" src="data:image/*;base64,@(Convert.ToBase64String(comment.senderProfilePicture))">
+                    </div>
+                    <br>
+                    <div class="comment__content">
+                        <p class="comment__author">@comment.senderNameSurname</p>
+                        <p class="comment__text">@comment.CommentText</p>
+                        <div class="stars" id="stars-@comment.CommentId">
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <script>
+        function getStarRating(Srating) {
+            var starRating = '';
+            var rating = Srating;
+            var maxRating = 5;
+
+            for (var i = 1; i <= maxRating; i++) {
+                if (i <= rating) {
+                    starRating += '<i class="fa fa-star" style="color:gold">&#9733;</i>';
+                } else {
+                    starRating += '<i class="fa fa-star-o"></i>';
+                }
+            }
+            return starRating;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+        @foreach (var comment in Model)
+        {
+            <text>
+                    document.getElementById('stars-@comment.CommentId').innerHTML = getStarRating(@comment.Rating);
+            </text>
+        }
+                                });
+    </script>
+
 </body>
 </html>
+

@@ -20,3 +20,9 @@ body {
 .form-group-spacing {
     margin-bottom: 10px;
 }
+
+a {
+    text-decoration: none;
+    font-size: 22px;
+    color: black;
+}

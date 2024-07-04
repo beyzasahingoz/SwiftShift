@@ -1,0 +1,575 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using Bitirme.Areas.Identity.Data
+@using Bitirme.Areas.Sessions.Pages
+@inject UserManager<ApplicationUser> UserManager
+@model MyOrderModel
+@{
+
+    var userId = ViewBag.UserId;
+    var isOrder = ViewBag.IsOrder;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://use.fontawesome.com/2b4da12501.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-8HUsf4PLvM2dXu4Zg2K2KDEDODSYNIVg7cbvFb8ZD1hW0VOrKu4tpPzX8Bm9JU4Se+PeyUemAo5usI2VZrMpxg==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Bitirme.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-8HUsf4PLvM2dXu4Zg2K2KDEDODSYNIVg7cbvFb8ZD1hW0VOrKu4tpPzX8Bm9JU4Se+PeyUemAo5usI2VZrMpxg==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-/yIrL/Jvy3ZVEk7zWfE4B2GcpkNejYgk6iPDpk2GXYyF2sf21udXz5un3ERXwLrG5o95Wk5B+n0IsU6fu+DKKg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+
+    <style>
+        .modalcard {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        .btn-get-contact {
+            text-align: center;
+            background-color: #4caf50;
+            color: white;
+            padding: 6px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .card-body {
+            padding: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border-radius: 20px;
+            color: #ffffff;
+            font-size: 16px;
+            padding: 5px 9px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+            button:hover {
+                background-color: honeydew;
+            }
+
+        .card-footer {
+            background-color: #4CAF50;
+        }
+
+        .modal-footer {
+            background-color: #4CAF50;
+        }
+
+        .rating-box, .updateRating-box {
+            top: 7px;
+            position: relative;
+            background: whitesmoke;
+            padding: 25px 100px 35px;
+            border-radius: 25px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .modal-body textarea {
+            resize: none; /* Disable resizing */
+            border: 1px solid #ced4da; /* Add border */
+            background-color: #f8f9fa; /* Set background color */
+            color: #212529; /* Set text color */
+        }
+
+        .stars {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+            .stars input {
+                display: none;
+            }
+
+            .stars label {
+                color: #honeydew;
+                font-size: 35px;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+
+                .stars label.active {
+                    color: #ff9c1a;
+                }
+
+        .updateStars {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+            .updateStars input {
+                display: none;
+            }
+
+            .updateStars label {
+                color: #honeydew;
+                font-size: 35px;
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+
+                .updateStars label.active {
+                    color: #ff9c1a;
+                }
+
+        .animated-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .card {
+            width: 24rem;
+            height: 36rem;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            color: $color-primary-white;
+            box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.2);
+            img
+
+        {
+            position: absolute;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0.9;
+            transition: opacity .2s ease-out;
+        }
+
+        h2 {
+            position: absolute;
+            inset: auto auto 30px 30px;
+            margin: 0;
+            transition: inset .3s .3s ease-out;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: normal;
+            text-transform: uppercase;
+        }
+
+        p, .prdctBtn {
+            position: absolute;
+            opacity: 0;
+            max-width: 80%;
+            transition: opacity .3s ease-out;
+        }
+
+        p {
+            inset: auto auto 80px 30px;
+        }
+
+        .prdctBtn {
+            inset: auto auto 40px 200px;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        &:hover h2 {
+            inset: auto auto 360px 30px;
+            transition: inset .3s ease-out;
+        }
+
+        &:hover p, &:hover .prdctBtn, &:hover .prdctUpdate {
+            opacity: 1;
+            transition: opacity .5s .1s ease-in;
+        }
+
+        &:hover img {
+            transition: opacity .3s ease-in;
+            opacity: 0.5;
+        }
+
+        .prdctUpdate {
+            position: absolute;
+            opacity: 0;
+            max-width: 80%;
+            inset: auto auto 40px 300px; /* Düğmeyi sağ alt köşeye yaslar */
+            color: inherit;
+            text-decoration: none;
+            transition: opacity .3s ease-out;
+        }
+
+        #orderstat {
+            position: absolute;
+            opacity: 0;
+            max-width: 80%;
+            inset: auto auto 20px 300px; /* Düğmeyi sağ alt köşeye yaslar */
+            color: inherit;
+            text-decoration: none;
+            transition: opacity .3s ease-out;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+    @section scripts {
+        <script type="text/javascript">
+
+            // var orderStat = document.getElementById("orderStat").value;
+            // if (orderStat === "4") {
+            //     document.getElementById("deliveredApprove").style.display = "inline-block";
+            // }
+
+            $(document).ready(function() {
+                if (@Model.UserOrders.Count == 0 && @Model.ProductTransporter.Count == 0) {
+                    swal("Hata!", "Siparişiniz Bulunmamaktadır!", "error", {
+                        button: "Tamam",
+                        timer: 5000
+                    });
+                }
+            });
+
+            function openUpdateCommentModal(productId) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/Sessions/MyOrder?handler=Comment',
+                    data: { productId: productId },
+                    success: function(response) {
+                        if (response) {
+                            $('#updateCommentText').val(response.commentText);
+
+                            var rating = response.rating;
+                            const stars = document.querySelectorAll('input[name="ratingUpdate"]');
+
+                            stars.forEach((star, index) => {
+                                if (index < rating) {
+                                    star.checked = true;
+                                    star.nextElementSibling.classList.add("active");
+                                } else {
+                                    star.checked = false;
+                                    star.nextElementSibling.classList.remove("active");
+                                }
+                            });
+
+                            $('#updateCommentId').val(response.commentId);
+                        }
+                        $('#updateCommentModal').modal('show');
+                    },
+                    error: function() {
+                        console.error('Error fetching comment');
+                    }
+                });
+            }
+
+            function updateComment() {
+                debugger;
+                var commentId = $('#updateCommentId').val();
+                var commentText = $('#updateCommentText').val();
+                var rating = $('input[name="ratingUpdate"]:checked').val();
+
+                $.ajax({
+                    url: '/Main/UpdateComment',
+                    type: 'POST',
+                    data: { CommentId: commentId, CommentText: commentText, Rating: rating },
+                    success: function(response) {
+                        $('#updateCommentModal').modal('hide');
+                        swal({
+                            title: "Güncelleme",
+                            text: "Yorum Başarılı Bir Şekilde Güncellenmiştir!",
+                            icon: "success",
+                            button: true
+                        }).then(function() {
+                            location.reload(true);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating comment:', error);
+                    }
+                });
+            }
+
+            function openCommentModal(productId) {
+                $('#commentModal').attr('data-product-id', productId);
+                $('#commentModal').modal('show');
+            }
+
+            function addComment() {
+                var productId = $('#commentModal').data('product-id');
+                var commentText = $('#commentText').val();
+                var rating = $('input[name="rating"]:checked').val();
+
+                $.ajax({
+                    url: '/Main/AddComment',
+                    type: 'POST',
+                    data: { ProductId: productId, CommentText: commentText, Rating: rating },
+                    success: function(response) {
+                        $('#commentModal').modal('hide');
+                        swal({
+                            title: "Ekleme",
+                            text: "Yorum Başarılı Bir Şekilde Eklenmiştir!",
+                            icon: "success",
+                            button: true
+                        }).then(function() {
+                            location.reload(true);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error adding comment:', error);
+                    }
+                });
+            }
+
+            function Modal_Guncelle(productId) {
+                debugger
+                var orderSt = document.getElementById('orderStat2').value;
+                $.ajax({
+                    type: 'POST',
+                    url: '/Sessions/MyOrder?handler=UpdateProduct',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ "productId": productId, "orderStatus": orderSt }),
+                    headers:
+                    {
+                        "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        location.reload(true);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating data:', error);
+                    }
+                });
+            }
+
+            function click_deliveredApproved(productId) {
+                debugger
+                $.ajax({
+                    type: 'POST',
+                    url: '/Sessions/MyOrder?handler=DeliveredApproved',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ "productId": productId }),
+                    headers:
+                    {
+                        "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        location.reload(true);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating data:', error);
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                debugger;
+                const updateStars = document.querySelectorAll('input[name="ratingUpdate"]');
+
+                updateStars.forEach((star, index1) => {
+                    star.addEventListener("click", () => {
+                        updateStars.forEach((star, index2) => {
+                            index1 >= index2 ? star.nextElementSibling.classList.add("active") : star.nextElementSibling.classList.remove("active");
+                        });
+                    });
+                });
+
+                const stars = document.querySelectorAll('input[name="rating"]');
+
+                stars.forEach((star, index1) => {
+                    star.addEventListener("click", () => {
+                        stars.forEach((star, index2) => {
+                            index1 >= index2 ? star.nextElementSibling.classList.add("active") : star.nextElementSibling.classList.remove("active");
+                        });
+                    });
+                });
+            });
+        </script>
+    }
+    </head>
+    <body>
+        <header class="w3-display-container w3-wide">
+            <div class="row">
+                @if (Model.UserOrders.Count != 0 && isOrder == true @*&& isTransporter==1*@ )
+            {
+                @foreach (var advert in Model.UserOrders)
+                {
+                    <div class="animated-card col-md-4">
+                        <div class="card">
+                            @if (@advert.ProductImage == null)
+                            {
+                                <img src="~/images/delivery.jpg" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                            }
+                            else
+                            {
+                                <img src="data:image/*;base64,@(Convert.ToBase64String(@advert.ProductImage))" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                            }
+                            <h2>
+                                @advert.ProductName
+                            </h2>
+                            <p class="card-text">
+                                <strong>Kilogram:</strong> @advert.ProductKg <br />
+                                <strong>Ürünün Bulunduğu Yer:</strong> @advert.FromDistrict.DistrictName/ @advert.FromCity.CityName/ @advert.FromCountry.CountryName <br />
+                                <strong>Ürünün Gideceği Yer:</strong> @advert.ToDistrict.DistrictName/ @advert.ToCity.CityName/ @advert.ToCountry.CountryName <br />
+                                <strong>Adres:</strong> @advert.Address <br />
+                                <strong>Gideceği Tarih:</strong> @advert.WhenDate.ToString("dd/MM/yyyy") <br />
+                                <strong>Not:</strong> @advert.ProductNote <br />
+                                <strong>Sipariş Durumu:</strong>
+                                <select name="orderStatus" id="orderStat" class="form-select" @(userId != @advert.TransporterUserId ? "disabled" : "")>
+                                    <option value="1" @(advert.OrderStatus == "1" ? "selected" : "")>Sipariş Alındı</option>
+                                    <option value="2" @(advert.OrderStatus == "2" ? "selected" : "")>Sipariş Hazırlanıyor</option>
+                                    <option value="3" @(advert.OrderStatus == "3" ? "selected" : "")>Yolda</option>
+                                    <option value="4" @(advert.OrderStatus == "4" ? "selected" : "")>Teslim Edildi</option>
+                                </select>
+                            </p>
+                            <div class="button-container">
+                                @if (advert.OrderStatus == "4" && advert.isDelivered == 0)
+                                {
+                                    <button class="prdctUpdate" type="button" id="deliveredApprove" onclick="click_deliveredApproved('@advert.ProductId')">Onayla</button>
+                                }
+                                @if (advert.OrderStatus == "4" && advert.isCommentMade == 0)
+                                {
+                                    <button class="prdctBtn" type="button" onclick="openCommentModal('@advert.ProductId')">Yorum Yap</button>
+                                }
+
+                                @if (advert.OrderStatus == "4" && advert.isCommentMade == 1)
+                                {
+                                    <button class="prdctBtn" type="button" onclick="openUpdateCommentModal('@advert.ProductId')">Yorum Güncelle</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            @if (Model.ProductTransporter.Count != 0)
+            {
+                @foreach (var advert in Model.ProductTransporter)
+                {
+                    <div class="animated-card col-md-4">
+                        <div class="card">
+                            @if (@advert.ProductImage == null)
+                            {
+                                <img src="~/images/delivery.jpg" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                            }
+                            else
+                            {
+                                <img src="data:image/*;base64,@(Convert.ToBase64String(@advert.ProductImage))" alt="Product Image" data-toggle="modal" data-target="#exampleModal" />
+                            }
+                            <h2>
+                                @advert.ProductName
+                            </h2>
+                            <p class="card-text">
+                                <strong>Kilogram:</strong> @advert.ProductKg <br />
+                                <strong>Ürünün Bulunduğu Yer:</strong> @advert.FromDistrict.DistrictName/ @advert.FromCity.CityName/ @advert.FromCountry.CountryName <br />
+                                <strong>Ürünün Gideceği Yer:</strong> @advert.ToDistrict.DistrictName/ @advert.ToCity.CityName/ @advert.ToCountry.CountryName <br />
+                                <strong>Adres:</strong> @advert.Address <br />
+                                <strong>Gideceği Tarih:</strong> @advert.WhenDate.ToString("dd/MM/yyyy") <br />
+                                <strong>Not:</strong> @advert.ProductNote <br />
+                                <strong>Sipariş Durumu:</strong>
+                                <select name="orderStatus2" id="orderStat2" class="form-select" @(userId != @advert.TransporterUserId ? "disabled" : "")>
+                                    <option value="1" @(advert.OrderStatus == "1" ? "selected" : "")>Sipariş Alındı</option>
+                                    <option value="2" @(advert.OrderStatus == "2" ? "selected" : "")>Sipariş Hazırlanıyor</option>
+                                    <option value="3" @(advert.OrderStatus == "3" ? "selected" : "")>Yolda</option>
+                                    <option value="4" @(advert.OrderStatus == "4" ? "selected" : "")>Teslim Edildi</option>
+                                </select>
+                            </p>
+                            <div class="button-container">
+                                @if (advert.isDelivered == 0)
+                                {
+                                    <button class="prdctUpdate" type="button" onclick="Modal_Guncelle('@advert.ProductId')">Güncelle</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </header>
+
+    <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true" data-product-id="">
+        <div class="modal-dialog modal-dialog-centered rounded-3">
+            <div class="modal-content rounded-3">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentModalLabel">Yorum Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control form-control-lg rounded-3" id="commentText" rows="3" placeholder="Yorum yaz..."></textarea>
+                    <div class="rating-box">
+                        <div class="stars">
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 stars"><i class="fa fa-duotone fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="button" class="btn btn-sm btn-delete" onclick="addComment()">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="updateCommentModal" tabindex="-1" role="dialog" aria-labelledby="updateCommentModalLabel" aria-hidden="true" data-comment-id="">
+        <div class="modal-dialog modal-dialog-centered rounded-3">
+            <div class="modal-content rounded-3">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCommentModalLabel">Yorum Güncelle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="updateCommentId" value="" />
+                    <textarea class="form-control form-control-lg rounded-3" id="updateCommentText" rows="3" placeholder="Yorum yaz..."></textarea>
+                    <div class="updateRating-box">
+                        <div class="updateStars">
+                            <input type="radio" id="updateStar1" name="ratingUpdate" value="1" /><label for="updateStar1" title="1 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="updateStar2" name="ratingUpdate" value="2" /><label for="updateStar2" title="2 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="updateStar3" name="ratingUpdate" value="3" /><label for="updateStar3" title="3 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="updateStar4" name="ratingUpdate" value="4" /><label for="updateStar4" title="4 stars"><i class="fa fa-duotone fa-star"></i></label>
+                            <input type="radio" id="updateStar5" name="ratingUpdate" value="5" /><label for="updateStar5" title="5 stars"><i class="fa fa-duotone fa-star"></i></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end">
+                    <button type="button" class="btn btn-sm btn-delete" onclick="updateComment()">Güncelle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ürün Resmi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img src="~/images/profilePicture.png" alt="Product Image" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

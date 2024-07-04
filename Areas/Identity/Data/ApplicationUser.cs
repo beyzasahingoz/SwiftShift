@@ -19,6 +19,7 @@ public class ApplicationUser : IdentityUser
     }
     public string Ad { get; set; }
     public string Soyad { get; set; }
+    public int ConfirmCode { get; set; }
     public byte[]? ProfilePicture { get; set; }
 
     public decimal? Point { get; set; }
@@ -51,9 +52,27 @@ public class ApplicationUser : IdentityUser
 
     public string Latitude { get; set; }
     public string Longitude { get; set; }
-    public int? ProductId { get; set; }
-    public virtual Product Product { get; set; }
 
     public virtual ICollection<Message> Messages { get; set; }
+
+    [Range(0, 10)]
+    public int TotalRating { get; set; } // Kullanıcının toplam puanı
+
+    public int RatingCount { get; set; } // Kullanıcıya yapılan değerlendirme sayısı
+
+    public ICollection<UserReview> ReviewsReceived { get; set; }
+
+    public string? Address { get; set; }
+    public double PaidPrice { get; set; }
+
+    public string UserIBAN { get; set; }
+    public string TCKN { get; set; }
+    public DateTime BirthDate { get; set; }
+
+    public int isVerified { get; set; }
+    public string Gender { get; set; }
+    public DateTime RegisterDate { get; set; }
+
+
 }
 

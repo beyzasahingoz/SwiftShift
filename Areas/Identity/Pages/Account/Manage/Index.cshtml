@@ -4,96 +4,236 @@
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
 <style>
-     .profileImg {
-            padding: 2px;
-            margin: 6px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: center;
-            margin-left: 50px;
-            cursor: pointer;
+    body {
+        margin-bottom: 60px;
+        font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    }
+
+    a {
+        text-decoration: none;
+        font-size: 22px;
+        color: black;
+    }
+
+    .info-message {
+        font-size: 1em;
+        font-weight: bold;
+        color: #2c3e50;
+        background-color: #ecf0f1;
+        padding: 7px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 2px solid #4CAF50;
+    }
+
+    .profileImg {
+        width: 200px;
+        height: 200px;
+        padding: 2px;
+        margin: 6px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: center;
+        margin-left: 50px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+        .profileImg:hover {
+            background-color: cadetblue;
         }
 
-            .profileImg:hover {
-                background-color: cadetblue;
-            }
+    .profile-container {
+        text-align: left;
+    }
 </style>
 <script>
+    flatpickr(".datepicker", {
+        dateFormat: "d/m/Y"
+    });
+
+    var VerifiedMessage = '@TempData["NotVerifiedMessage"]';
+    if (VerifiedMessage !== '') {
+        VerifiedMessage += "Profil düzenle sayfasından kimliğinizi onaylayınız!";
+        swal("Başarısız!", VerifiedMessage, "error");
+    }
+</script>
+<script>
+    $(document).ready(function() {
+        debugger
+        if (@Model.Input.isVerified) {
+            $('#Input_FirstName').prop('readOnly', true);
+            $('#Input_LastName').prop('readOnly', true);
+            $('#Input_BirthDate').prop('readOnly', true);
+            $('#Input_TCKN').prop('readOnly', true);
+        }
+    });
     function showFileInput() {
         document.getElementById('fileInput').click();
     }
+
+    var sweetAlertMessage = '@TempData["SweetAlertMessage"]';
+    if (sweetAlertMessage !== '') {
+        sweetAlertMessage += "TCKN isim, soyisim ve doğum tarihi ile eşleşemedi.";
+        swal("Başarısız!", sweetAlertMessage, "error");
+    }
 </script>
-<h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post" enctype="multipart/form-data">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.FirstName"></label>
-                    <input asp-for="Input.FirstName" class="form-control" />
-                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                </div>
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.LastName"></label>
-                    <input asp-for="Input.LastName" class="form-control" />
-                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.PhoneNumber"></label>
-                    <input asp-for="Input.PhoneNumber" class="form-control" />
-                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-                </div>
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.Country"></label>
-                    <select asp-for="Input.Country" asp-items="@(Model.Countries)" class="form-control"></select>
-                    <span asp-validation-for="Input.Country" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.City"></label>
-                    <select asp-for="Input.City" asp-items="@(Model.Cities)" class="form-control"></select>
-                    <span asp-validation-for="Input.City" class="text-danger"></span>
-                </div>
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.District"></label>
-                    <select asp-for="Input.District" asp-items="@(Model.District)" class="form-control"></select>
-                    <span asp-validation-for="Input.District" class="text-danger"></span>
-                </div>
-            </div>
-            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
-            <div class="col-md-6">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="profileImg" onclick="showFileInput()">
-                    <label asp-for="Input.ProfilePicture" style="width:100%;"></label>
-                    @if (Model.Input.ProfilePicture != null)
-                    {
-                        <img id="profilePicture" style="width:200px;height:200px;cursor:pointer; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(Model.Input.ProfilePicture))">
-                    }
-                    else
-                    {
-                        <img id="profilePicture" style="width:200px;height:200px;cursor:pointer; object-fit:cover" src="~/images/profilePicture.png">
-                    }
-                </div>
+    <form id="profile-form" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="profile-container">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.Input.isVerified == 0)
+            {
+                <p class="info-message">*Onaylı kullanıcı olmak için TC Kimlik Numarası, Ad, Soyad ve Doğum Tarihinizi doğru girmelisiniz.</p>
+            }
+            <div class="profileImg" onclick="showFileInput()">
+                @if (Model.Input.ProfilePicture != null)
+                {
+                    <img id="profilePicture" style="width:200px;height:200px;cursor:pointer; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(Model.Input.ProfilePicture))">
+                }
+                else
+                {
+                    <img id="profilePicture" style="width:200px;height:200px;cursor:pointer; object-fit:cover" src="~/images/profilePicture.png">
+                }
                 <div>
                     <input type="file"
                            accept=".png,.jpg,.jpeg,.gif,.tif"
                            asp-for="Input.ProfilePicture"
                            class="form-control"
                            id="fileInput"
-                           style="display:none;"
+                           style="display:none; width:200px;height:200px;"
                            onchange="document.getElementById('profilePicture').src = window.URL.createObjectURL(this.files[0])" />
                     <span asp-validation-for="Input.ProfilePicture" class="text-danger"></span>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
 
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Telefon Numarası</label>
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Input.Country"></label>
+                <br />
+                <select id="ddlCountries" class="form-control" asp-for="Input.Country" asp-items="@Model.CascadingModel.Countries">
+                    <option value="">@Model.Input.Country</option>
+                </select>
+                <span asp-validation-for="Input.Country" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Input.City"></label>
+                <br />
+                <select id="ddlCities" class="form-control" asp-for="Input.City" asp-items="@Model.CascadingModel.Cities">
+                    <option value="">@Model.Input.City</option>
+                </select>
+                <span asp-validation-for="Input.City" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Input.District"></label>
+                <br />
+                <select id="ddlDistrict" class="form-control" asp-for="Input.District" asp-items="@Model.CascadingModel.District">
+                    <option value="">@Model.Input.District</option>
+                </select>
+                <span asp-validation-for="Input.District" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="Input.TCKN"></label>
+                <input asp-for="Input.TCKN" class="form-control" />
+                <span asp-validation-for="Input.TCKN" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Input.BirthDate"></label>
+                <input asp-for="Input.BirthDate" class="form-control" type="date" />
+                <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label asp-for="Input.Address"></label>
+                <textarea asp-for="Input.Address" class="form-control"></textarea>
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12 d-flex justify-content-start">
+                <button id="update-profile-button" type="submit" class="btn btn-primary btn-block">Kaydet</button>
+            </div>
+        </div>
+    </form>
+</div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        $(function() {
+            $("select").change(function() {
+                var value = 0;
+                if ($(this).val() != "") {
+                    value = $(this).val();
+                }
+                var id = $(this).attr("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Identity/Account/Manage?handler=AjaxMethod",
+                    data: { "value": value, "type": id },
+                    contentType: 'application/x-www-form-urlencoded',
+                    dataType: "json",
+                    headers:
+                    {
+                        "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        switch (id) {
+                            case "ddlCountries":
+                                PopulateDropDown("#ddlCities", response.cities);
+                                break;
+                            case "ddlCities":
+                                PopulateDropDown("#ddlDistrict", response.district);
+                                break;
+                        }
+                    },
+                    failure: function(response) {
+                        alert(response.responseText);
+                    },
+                    error: function(response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+        });
+
+        function PopulateDropDown(dropDownId, list) {
+            $(dropDownId).empty().append('<option selected="selected" value="0">Seçiniz</option>');
+            if (list != null && list.length > 0) {
+                $.each(list, function() {
+                    debugger;
+                    $(dropDownId).append($("<option></option>").val(this['value']).html(this['text']));
+                });
+            }
+        }
+    </script>
 }

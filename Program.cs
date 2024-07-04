@@ -16,15 +16,19 @@ builder.Services.AddDbContext<DbContextSwiftShift>(options =>
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<DbContextSwiftShift>();
 
-//builder.Services.AddDbContext<DbContextSwiftShift>(options =>
-//    options.UseSqlServer(connectionString));
-
-//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<DbContextSwiftShift>();
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddRazorPages();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //{
@@ -35,6 +39,8 @@ builder.Services.AddSignalR();
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
+
+app.UseDefaultFiles();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -52,6 +58,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
+app.UseSession();
 
 app.MapRazorPages();
 app.MapHub<ChatHub>("/ChatHub");

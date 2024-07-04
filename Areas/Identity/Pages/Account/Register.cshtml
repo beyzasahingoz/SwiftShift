@@ -1,96 +1,323 @@
 ﻿@page
 @model RegisterModel
+
 @{
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kayıt Ol</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+    <style>
+        .card-registration {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label asp-for="Input.Ad"></label>
-            <input asp-for="Input.Ad" class="form-control" autocomplete="firstname" aria-required="true" />
-            <span asp-validation-for="Input.Ad" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6">
-            <label asp-for="Input.Soyad"></label>
-            <input asp-for="Input.Soyad" class="form-control" autocomplete="lastname" aria-required="true" />
-            <span asp-validation-for="Input.Soyad" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label asp-for="Input.Email"></label>
-            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
-            <span asp-validation-for="Input.Email" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6">
-            <label asp-for="Input.CountryId" class="control-label"></label>
-            <select asp-for="Input.CountryId" asp-items="@(Model.Countries)" class="form-control"></select>
-            <span asp-validation-for="Input.CountryId" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label asp-for="Input.CityId" class="control-label"></label>
-            <select asp-for="Input.CityId" asp-items="@(Model.Cities)" class="form-control"></select>
-            <span asp-validation-for="Input.CityId" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6">
-            <label asp-for="Input.DistrictId" class="control-label"></label>
-            <select asp-for="Input.DistrictId" asp-items="@(Model.District)" class="form-control"></select>
-            <span asp-validation-for="Input.DistrictId" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label asp-for="Input.Password"></label>
-            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
-            <span asp-validation-for="Input.Password" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-6">
-            <label asp-for="Input.ConfirmPassword"></label>
-            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
-            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-        </div>
-    </div>
-    <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-</form>
-@*<div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                article
-                                about setting up this ASP.NET application to support logging in via external services
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
+        .form-outline {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+            .form-outline input.form-control {
+                border: none;
+                border-radius: 0;
+                border-bottom: 1px solid #ced4da;
+                border-radius: .25rem;
+                box-shadow: none;
             }
-        </section>
-    </div>*@
+
+                .form-outline input.form-control:focus {
+                    box-shadow: none;
+                    border-bottom: 2px solid #4caf50;
+                }
+
+        .form-label {
+            position: absolute;
+            top: .8rem;
+            left: 1rem;
+            transition: all .2s ease-out;
+            color: #495057;
+            opacity: .5;
+        }
+
+        .form-outline input.form-control:focus + .form-label,
+        .form-outline input.form-control:not(:placeholder-shown) + .form-label {
+            transform: translateY(-1.5rem) scale(0.8);
+            opacity: .8;
+        }
+
+        .btn-primary {
+            background-color: #4caf50;
+            border-color: #4caf50;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+            .btn-primary:hover {
+                background-color: #4caf50;
+                border-color: #4caf50;
+            }
+
+        .col-md-4 img {
+            width: 100%; /* Resmin sütunun tamamını kaplamasını sağlar */
+            height: 100%; /* Orijinal oranı korur */
+            object-fit: cover; /* Resmin sütun boyutlarına uyum sağlamasını sağlar */
+            border-radius: 10px 0 0 10px; /* Kenar yuvarlama */
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <div class="card card-registration my-4">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="~/images/cargo.jpg" alt="Cargo" class="img-fluid" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body p-md-5 text-black">
+                                <h3 class="mb-5 text-uppercase">Kayıt Ol</h3>
+                                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    @Html.AntiForgeryToken()
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <input asp-for="Input.Ad" class="form-control form-control-lg" autocomplete="firstname"
+                                                       aria-required="true" />
+                                                <label class="form-label" for="form3Example1m">İsim</label>
+                                                <span asp-validation-for="Input.Ad" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <input asp-for="Input.Soyad" class="form-control form-control-lg" autocomplete="lastname"
+                                                       aria-required="true" />
+                                                <label class="form-label" for="form3Example1n">Soyisim</label>
+                                                <span asp-validation-for="Input.Soyad" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <input asp-for="Input.Email" class="form-control form-control-lg" autocomplete="username"
+                                                       aria-required="true" />
+                                                <label class="form-label" for="form3Example1m">Email</label>
+                                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="ddlCountries">Ülke</label>
+                                        <span asp-validation-for="Input.CountryId" class="text-danger"></span>
+                                        </div>
+                                        </div>*@
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <select id="ddlCountries" class="form-control form-control-lg" asp-for="Input.CountryId"
+                                                        asp-items="@Model.CascadingModel.Countries">
+                                                    <option value="">Lütfen Ülke Seçiniz</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        @* <div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="ddlCities">Şehir</label>
+                                        <span asp-validation-for="Input.CityId" class="text-danger"></span>
+                                        </div>
+                                        </div>*@
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <select id="ddlCities" class="form-control form-control-lg" asp-for="Input.CityId"
+                                                        asp-items="@Model.CascadingModel.Cities">
+                                                    <option value="">Lütfen Şehir Seçiniz</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="ddlDistrict">İlçe</label>
+                                        <span asp-validation-for="Input.DistrictId" class="text-danger"></span>
+                                        </div>
+                                        </div>*@
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <select id="ddlDistrict" class="form-control form-control-lg" asp-for="Input.DistrictId"
+                                                        asp-items="@Model.CascadingModel.District">
+                                                    <option value="">Lütfen İlçe Seçiniz</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <input asp-for="Input.Password" class="form-control form-control-lg" autocomplete="new-password" aria-required="true" />
+                                                <label class="form-label" for="form3Example1m">Şifre</label>
+                                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <input asp-for="Input.ConfirmPassword" class="form-control form-control-lg" autocomplete="new-password" aria-required="true" />
+                                                <label class="form-label" for="form3Example1n">Şifreyi Onayla</label>
+                                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <select id="ddGender" class="form-control form-control-lg" asp-for="Input.Gender">
+                                                    <option value="">Cinsiyet Seçiniz</option>
+                                                    <option value="Kadın">Kadın</option>
+                                                    <option value="Erkek">Erkek</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-check mb-4">
+                                        <input class="form-check-input" type="checkbox" id="acceptTermsCheckbox">
+                                        <label class="form-check-label" for="acceptTermsCheckbox">
+                                            Kullanıcı sözleşmesi hükümlerini kabul ediyorum.
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check mb-4">
+                                        <input class="form-check-input" type="checkbox" id="acceptKvkkCheckbox">
+                                        <label class="form-check-label" for="acceptKvkkCheckbox">
+                                            KVKK kapsamında verilerimin işlenmesini kabul ediyorum.
+                                        </label>
+                                    </div>
+                                    <div class="d-flex justify-content-end pt-3">
+                                        <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg">Kayıt Ol</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        $(function() {
+            $("select").each(function() {
+                if ($(this).find("option").length <= 1) {
+                    $(this).attr("disabled", "disabled");
+                }
+            });
+
+            $("select").change(function() {
+                var value = 0;
+                if ($(this).val() != "") {
+                    value = $(this).val();
+                }
+                var id = $(this).attr("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Identity/Account/Register?handler=AjaxMethod",
+                    data: { "value": value, "type": id },
+                    contentType: 'application/x-www-form-urlencoded',
+                    dataType: "json",
+                    headers:
+                    {
+                        "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        switch (id) {
+                            case "ddlCountries":
+                                DisableDropDown("#ddlDistrict");
+                                PopulateDropDown("#ddlCities", response.cities);
+                                break;
+                            case "ddlCities":
+                                DisableDropDown("#ddlDistrict");
+                                PopulateDropDown("#ddlDistrict", response.district);
+                                break;
+                        }
+                    },
+                    failure: function(response) {
+                        alert(response.responseText);
+                    },
+                    error: function(response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+        });
+
+        function DisableDropDown(dropDownId) {
+            $(dropDownId).attr("disabled", "disabled");
+            $(dropDownId).empty().append('<option selected="selected" value="0">Seçiniz</option>');
+        }
+
+        function PopulateDropDown(dropDownId, list) {
+            if (list != null && list.length > 0) {
+                $(dropDownId).removeAttr("disabled");
+                $.each(list, function() {
+                    debugger;
+                    $(dropDownId).append($("<option></option>").val(this['value']).html(this['text']));
+                });
+            }
+        }
+
+        $("#registerSubmit").click(function() {
+
+            if ($("#ddlCountries").val() === "") {
+                swal("Hata!", "Lütfen bir ülke seçiniz!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+                return false;
+            }
+
+            if ($("#ddlCities").val() === "") {
+                swal("Hata!", "Lütfen bir şehir seçiniz!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+                return false;
+            }
+
+            if ($("#ddlDistrict").val() === "") {
+                swal("Hata!", "Lütfen bir ilçe seçiniz!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+                return false;
+            }
+
+            if (!$("#acceptTermsCheckbox").is(":checked")) {
+                swal("Hata!", "Kullanıcı Sözleşmesini Kabul Etmeden Kayıt Olamazsınız!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+                return false;
+            }
+
+            if (!$("#acceptKvkkCheckbox").is(":checked")) {
+                swal("Hata!", "KVKK Sözleşmesini Kabul Etmeden Kayıt Olamazsınız!", "error", {
+                    button: "Tamam",
+                    timer: 5000
+                });
+                return false;
+            }
+        });
+    </script>
 }
