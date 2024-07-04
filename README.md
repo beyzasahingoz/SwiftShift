@@ -17,11 +17,11 @@ To install and run the project, follow these steps:
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/beyzasahingoz/SwiftS.git
+    git clone https://github.com/beyzasahingoz/SwiftShift.git
     ```
 2. Navigate to the project directory:
     ```sh
-    cd SwiftS
+    cd SwiftShift
     ```
 3. Install dependencies:
     ```sh
